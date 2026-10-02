@@ -13,15 +13,15 @@
 <meta name="theme-color" content="#F3F4F8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#F3F4F8; --surface:#FFFFFF; --ink:#232646; --muted:#62668A; --line:#D9DBE7;
   --lh:#14907C; --lh-soft:#D3EEE8; --rh:#D8436E; --rh-soft:#F8DCE4;
   --kw:#FFFFFF; --kw-edge:#C9CBD8; --kb:#24263B; --focus:#3B5BDB;
   --t-new:#3567C9; --t-learn:#B7700A; --t-done:#2E8540; --t-review:#7B4FC4; --t-fav:#C7365F;
-  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --display:"Figtree", -apple-system, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  --body:"Figtree", -apple-system, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
@@ -50,7 +50,7 @@ button{cursor:pointer}
 h1,h2{font-family:var(--display);line-height:1.1;margin:0}
 
 /* Library */
-.lib-head{padding:44px 0 26px}
+.lib-head{padding:36px 0 20px}
 .lib-head h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:800;letter-spacing:-.02em}
 .lib-head p{color:var(--muted);margin:10px 0 0;max-width:56ch}
 .hero-keys{margin:26px 0 8px;max-width:520px}
@@ -62,9 +62,13 @@ h1,h2{font-family:var(--display);line-height:1.1;margin:0}
 .btn[disabled]{opacity:.45;cursor:default}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .songs{display:grid;gap:12px;margin-top:22px}
-.song-card{display:grid;grid-template-columns:1fr auto;gap:6px 16px;align-items:center;text-align:left;width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px}
+.song-card{display:grid;gap:6px;align-items:center;text-align:left;width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 16px}
 .song-card:hover{border-color:var(--ink)}
-.song-card h2{font-size:1.3rem;font-weight:700}
+.song-card h2{font-size:1.15rem;font-weight:700;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.song-card h2 .by{font-size:.95rem;font-weight:500;color:var(--muted)}
+.tag.warn{--tc:#B04A12}
+.sort{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:.88rem;font-weight:600;color:var(--muted)}
+.sort select{min-height:34px;padding:4px 8px;font-size:.88rem}
 .song-card .meta{color:var(--muted);font-size:.92rem}
 .song-card .thumbs{grid-row:1/3;grid-column:2;display:flex;gap:6px}
 @media (max-width:600px){.song-card .thumbs{grid-row:auto;grid-column:1/-1}}
@@ -152,7 +156,7 @@ select{font:inherit;border:1.5px solid var(--line);border-radius:10px;padding:8p
 @media (max-width:600px){.two{grid-template-columns:1fr}}
 
 /* Étiquettes */
-.tag{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;font-weight:700;color:var(--tc);border:1.5px solid var(--tc);border-radius:999px;padding:2px 10px;line-height:1.4;white-space:nowrap}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;color:var(--tc);border:1px solid var(--tc);border-radius:999px;padding:1px 8px;line-height:1.4;white-space:nowrap}
 .tag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--tc)}
 .tag.fav::before{display:none}
 .tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -161,8 +165,9 @@ select{font:inherit;border:1.5px solid var(--line);border-radius:10px;padding:8p
 .chip .c{color:var(--muted);font-weight:400}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .chip[aria-pressed="true"] .c{color:var(--paper);opacity:.75}
-.status-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
-.st{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 13px;font-weight:700;min-height:40px;display:inline-flex;gap:7px;align-items:center;color:var(--ink)}
+.status-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:8px}
+.st{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 10px;font-weight:700;font-size:.74rem;min-height:28px;display:inline-flex;gap:5px;align-items:center;color:var(--ink)}
+.st::before{width:7px!important;height:7px!important}
 .st::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--tc)}
 .st.fav::before{display:none}
 .st[aria-pressed="true"]{border-color:var(--tc);background:var(--tc);color:var(--paper)}
@@ -211,17 +216,36 @@ button.lw.tap.on{background:var(--rh-soft)}
 .backup{margin-top:48px;padding-top:20px;border-top:1.5px solid var(--line);display:grid;gap:10px}
 .backup h2{font-size:1.2rem}
 label.btn{cursor:pointer}
-.gbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 0;border-bottom:1.5px solid var(--line)}
+.gbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--line)}
+.gbar .big{min-width:34px;min-height:34px;border-radius:9px;font-size:.85rem;padding:0}
+.gbar .btn{min-height:34px;padding:4px 10px;font-size:.82rem;border-radius:9px;border-width:1px}
+.gbar .seg{padding:2px;border-width:1px;border-radius:9px}
+.gbar .seg button{min-height:28px;padding:2px 9px;font-size:.78rem;border-radius:7px}
+.gbar .speed{font-size:.78rem;gap:6px}
+.gbar .speed input{width:96px}
+.gtools{margin-top:6px;gap:8px;font-size:.8rem}
+.gtools .seg{padding:2px;border-width:1px;border-radius:9px}
+.gtools .seg button{min-height:28px;padding:2px 9px;font-size:.78rem;border-radius:7px}
+.gtools .seg-label{font-size:.76rem;padding:0 4px}
+.gtools input[type=checkbox]{width:15px;height:15px}
 .gbar .counter{font-family:var(--display);font-weight:700;font-size:1.05rem;min-width:9ch;text-align:center}
-.grid{margin-top:18px;display:grid;gap:18px}
-.gline{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:16px;align-items:start;padding-bottom:18px;border-bottom:1px dashed var(--line)}
-.gcard{display:flex;flex-direction:column;align-items:stretch;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px;text-align:left;width:100%;min-width:0}
+.grid{margin-top:12px;display:grid;gap:12px}
+.speed{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.92rem}
+.speed input{width:130px;accent-color:var(--ink)}
+.speed span{min-width:2ch;text-align:center}
+.countdown{position:fixed;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:clamp(5rem,22vw,11rem);color:var(--ink);background:color-mix(in srgb,var(--paper) 55%,transparent);z-index:50;pointer-events:none}
+.countdown.tick{animation:pop .35s ease-out}
+@keyframes pop{from{transform:scale(1.25);opacity:.4}to{transform:scale(1);opacity:1}}
+.gline{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:10px;align-items:start;padding-bottom:12px;border-bottom:1px dashed var(--line)}
+.grid.one{max-width:680px}
+@media (max-width:640px){.gline{grid-template-columns:minmax(0,1fr)}}
+.gcard{display:flex;flex-direction:column;align-items:stretch;gap:6px;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:8px;text-align:left;width:100%;min-width:0}
 .gcard svg{width:100%;height:auto;border-radius:6px}
 .gsep{flex:1}
 .scroll-btn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .gcard.cur{border-color:var(--ink);box-shadow:0 0 0 3px var(--ink)}
 .gcard.bare{background:transparent;border-style:dashed}
-.gwords{font-size:1.35rem;line-height:1.4;overflow-wrap:anywhere}
+.gwords{font-family:var(--body);font-weight:500;font-size:1.1rem;line-height:1.45;letter-spacing:0;color:var(--ink);overflow-wrap:anywhere}
 .gwords.none{color:var(--muted)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:600px){
@@ -586,15 +610,22 @@ function confirmBox(s){
 }
 function noticeHtml(){ return ui.notice ? `<p class="err" role="alert" style="margin-top:12px">${esc(ui.notice)}</p>` : ''; }
 function renderLibrary(){
-  const all = Object.values(songs).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  const opened = prefs.opened || {}, SO = prefs.sort || 'recent';
+  const ST_ORDER = { learning: 0, review: 1, new: 2, learned: 3 };
+  const cmpTxt = (a, b) => (a || '').localeCompare(b || '', 'fr', { sensitivity: 'base' });
+  const sorters = {
+    recent: (a, b) => (opened[b.id] || b.updatedAt || 0) - (opened[a.id] || a.updatedAt || 0),
+    title: (a, b) => cmpTxt(a.title, b.title),
+    artist: (a, b) => cmpTxt(a.artist, b.artist) || cmpTxt(a.title, b.title),
+    status: (a, b) => (ST_ORDER[statusOf(a)] - ST_ORDER[statusOf(b)]) || cmpTxt(a.title, b.title),
+    added: (a, b) => (b.createdAt || 0) - (a.createdAt || 0) || cmpTxt(a.title, b.title)
+  };
+  const all = Object.values(songs).sort(sorters[SO] || sorters.recent);
   const F = ui.filter || 'all';
   const list = all.filter(s => F === 'all' || (F === 'fav' ? s.fav : statusOf(s) === F));
   const heroL = [48], heroR = [60, 64, 67];
   let h = `<header class="lib-head">
     <h1>Mon carnet de piano</h1>
-    <p>Pour chaque chanson, les paroles et les touches à jouer, en couleur. Tu n'as plus à tout recopier dans un cahier.</p>
-    <div class="hero-keys">${mini(heroL, heroR, 520, 90).replace('width="520" height="90"', 'width="100%" height="auto"')}</div>
-    <div class="legend"><span><i class="sw" style="background:var(--lh)"></i>Main gauche</span><span><i class="sw" style="background:var(--rh)"></i>Main droite</span></div>
   </header>
   <div class="row"><button class="btn primary" data-act="import">Ajouter depuis une grille PDF</button><button class="btn" data-act="new">Écrire une chanson à la main</button><span class="status">${storageNote()}</span></div>${noticeHtml()}`;
   if (ui.creating){
@@ -615,14 +646,18 @@ function renderLibrary(){
     const opts = [['all', 'Toutes'], ['new', 'Nouvelles'], ['learning', 'En cours'], ['learned', 'Apprises'], ['review', 'À revoir'], ['fav', '♥ Coups de cœur']];
     h += `<div class="chips" role="group" aria-label="Filtrer les chansons">` + opts.filter(([k]) => k === 'all' || k === F || cnt(k))
       .map(([k, l]) => `<button class="chip" data-act="filter" data-f="${k}" aria-pressed="${F === k}">${l}<span class="c">${cnt(k)}</span></button>`).join('') + `</div>`;
+    h += `<label class="sort">Trier par
+      <select id="sortSel">${[['recent', 'Dernières ouvertes'], ['title', 'Titre (A → Z)'], ['artist', 'Artiste (A → Z)'], ['status', 'Où j\'en suis']].map(([k, l]) => `<option value="${k}" ${SO === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>`;
     if (!list.length) h += `<p class="hint" style="margin-top:14px">Aucune chanson dans cette catégorie.</p>`;
   }
   h += `<div class="songs">` + list.map(s => {
     if (ui.confirmDel === s.id) return confirmBox(s);
-    const R = songRange(s); const th = (s.moments || []).filter(m => m.lh.length || m.rh.length).slice(0, 4).map(m => mini(m.lh, m.rh, 64, 18, R)).join('');
+    const hasLyr = Array.isArray(s.lines) ? s.lines.some(l => l && l.trim()) : (s.moments || []).some(m => m.text);
+    const placed = (s.moments || []).some(m => m.w != null) || !Array.isArray(s.lines);
+    const lyrTag = !hasLyr ? '<span class="tag warn">Paroles à ajouter</span>' : !placed ? '<span class="tag warn">Paroles à placer</span>' : '';
     return `<div class="song-item"><button class="song-card" data-act="open" data-id="${esc(s.id)}">
-      <h2>${esc(s.title || 'Sans titre')}</h2><div class="thumbs">${th}</div>
-      <div class="meta tags">${tagHtml(s)}<span>${esc(s.artist || '')}${s.artist ? ' – ' : ''}${(s.moments || []).length} moments</span></div></button>
+      <h2>${esc(s.title || 'Sans titre')}${s.artist ? `<span class="by">${esc(s.artist)}</span>` : ''}</h2>
+      <div class="meta tags">${tagHtml(s)}${lyrTag}</div></button>
       <button class="del-x" data-act="del-card" data-id="${esc(s.id)}" aria-label="Supprimer « ${esc(s.title || 'Sans titre')} »" title="Supprimer">🗑</button></div>`;
   }).join('') + `</div>`;
   h += `<section class="backup">
@@ -872,7 +907,7 @@ function renderSong(){
   if (open){ const d = app.querySelector('details.more'); if (d) d.open = true; }
   soundNote(); preloadSong(s);
 }
-const SONG_ACTS = new Set(['autoscroll','speed','tap-word','no-words','oct-up','oct-down','lyrics-save','prev','next','go','listen','show','word','pull','key','combo','clear','add-after','add-end','del-mo',
+const SONG_ACTS = new Set(['cols','autoscroll','speed','tap-word','no-words','oct-up','oct-down','lyrics-save','prev','next','go','listen','show','word','pull','key','combo','clear','add-after','add-end','del-mo',
   'place-open','place-start','place-cancel','place-word','place-none','place-undo','mode-play','mode-edit']);
 function songAction(act, b){
   const s = curSong(), G = groupsOf(s), g = G[ui.idx], show = s.show || 'both';
@@ -918,7 +953,8 @@ function songAction(act, b){
       syncText(s); touch(); render(); break;
     }
     case 'mode-play': ui.edit = false; ui.place = null; render(); break;
-    case 'autoscroll': if (scrollState.on) stopScroll(); else startScroll(); break;
+    case 'cols': prefs.cols = +b.dataset.v; savePrefs(); render(); scrollToCurrent(); break;
+    case 'autoscroll': if (scrollState.on || scrollState.cd) stopScroll(); else countdown(); break;
     case 'speed': prefs.speed = b.dataset.v; savePrefs(); app.querySelectorAll('[data-act="speed"]').forEach(x => x.setAttribute('aria-pressed', x.dataset.v === prefs.speed)); break;
     case 'mode-edit': stopScroll(); ui.edit = true; render(); break;
     case 'prev': if (!ui.place) goTo(ui.idx - 1); break;
@@ -1022,16 +1058,17 @@ function gridView(s, G, show, handName){
   const firstStart = starts.find(x => x != null);
   let out = `<div class="gbar" role="toolbar" aria-label="Lecture">
       <button class="big" data-act="prev" aria-label="Accord précédent" ${ui.idx === 0 ? 'disabled' : ''}>◀</button>
-      <span class="counter" id="gCounter">Accord ${ui.idx + 1} / ${G.length}</span>
       <button class="big go" data-act="next" aria-label="Accord suivant" ${ui.idx < G.length - 1 ? '' : 'disabled'}>▶</button>
       <button class="btn" data-act="listen">🔊 Écouter</button>
       <span class="gsep"></span>
       <button class="btn scroll-btn${scrollState.on ? ' on' : ''}" data-act="autoscroll" id="scrollBtn">${scrollState.on ? '⏸ Pause' : '⏬ Défiler'}</button>
-      <div class="seg small" role="group" aria-label="Vitesse de défilement">
-        ${[['slow', 'Lent'], ['mid', 'Moyen'], ['fast', 'Rapide']].map(([k, l]) => `<button data-act="speed" data-v="${k}" aria-pressed="${(prefs.speed || 'slow') === k}">${l}</button>`).join('')}
+      <div class="seg small" role="group" aria-label="Accords par rangée">
+        <button data-act="cols" data-v="1" aria-pressed="${(prefs.cols || 2) === 1}">1 par 1</button>
+        <button data-act="cols" data-v="2" aria-pressed="${(prefs.cols || 2) === 2}">2 par 2</button>
       </div>
+      <label class="speed">Vitesse <input type="range" id="speedIn" min="1" max="10" step="1" value="${prefs.speedN || 3}" aria-label="Vitesse de défilement"><span id="speedVal">${prefs.speedN || 3}</span></label>
     </div>
-    <div class="tools">
+    <div class="tools gtools">
       <div class="seg small" role="group" aria-label="Mains affichées">
         <button data-act="show" data-v="both" aria-pressed="${show === 'both'}">Les deux mains</button>
         <button data-act="show" data-v="lh" aria-pressed="${show === 'lh'}"><i class="sw" style="background:var(--lh)"></i> Gauche</button>
@@ -1046,7 +1083,7 @@ function gridView(s, G, show, handName){
       <span class="status" id="sndNote"></span>
     </div>
     ${!W.length ? '<p class="hint">Pas encore de paroles : passe en mode « Modifier » pour les ajouter.</p>' : ''}
-    <div class="grid">`;
+    <div class="grid${(prefs.cols || 2) === 1 ? ' one' : ''}" style="--cols:${prefs.cols || 2}">`;
   let line = '';
   const flush = () => { if (line) out += `<div class="gline">${line}</div>`; line = ''; };
   if (firstStart != null && firstStart > 0) line += `<div class="gcard bare"><div class="gwords">${wordsHtml(0, firstStart)}</div></div>`;
@@ -1061,12 +1098,27 @@ function gridView(s, G, show, handName){
   return out + '</div>';
 }
 /* Défilement automatique, doux, de la vue partition */
-const SPEEDS = { slow: 14, mid: 26, fast: 42 };   // pixels par seconde
-const scrollState = { on: false, raf: 0, last: 0, acc: 0 };
+const SPEEDS = [0, 5, 8, 12, 16, 21, 27, 34, 42, 52, 64];   // pixels par seconde, réglage 1 à 10
+const scrollState = { on: false, raf: 0, last: 0, acc: 0, cd: 0 };
 function updateScrollBtn(){
   const b = document.getElementById('scrollBtn'); if (!b) return;
-  b.textContent = scrollState.on ? '⏸ Pause' : '⏬ Défiler'; b.classList.toggle('on', scrollState.on);
+  b.textContent = scrollState.cd ? '✕ Annuler' : scrollState.on ? '⏸ Pause' : '⏬ Défiler';
+  b.classList.toggle('on', scrollState.on || !!scrollState.cd);
 }
+// Petit compte à rebours avant de lancer le défilement
+function countdown(){
+  let n = 3;
+  const el = document.createElement('div'); el.className = 'countdown'; el.setAttribute('aria-live', 'assertive'); el.textContent = n;
+  document.body.appendChild(el);
+  scrollState.cd = setInterval(() => {
+    n--;
+    if (n > 0){ el.textContent = n; el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); return; }
+    clearInterval(scrollState.cd); scrollState.cd = 0; el.remove(); startScroll();
+  }, 1000);
+  scrollState.cdEl = el;
+  updateScrollBtn();
+}
+function cancelCountdown(){ if (!scrollState.cd) return; clearInterval(scrollState.cd); scrollState.cd = 0; if (scrollState.cdEl) scrollState.cdEl.remove(); updateScrollBtn(); }
 function followScroll(){
   const cards = [...app.querySelectorAll('.gcard[data-i]')]; if (!cards.length) return;
   const line = window.innerHeight * 0.38;
@@ -1099,7 +1151,7 @@ function startScroll(){
   const step = t => {
     if (!scrollState.on) return;
     const dt = Math.min(0.1, (t - scrollState.last) / 1000); scrollState.last = t;
-    scrollState.acc += (SPEEDS[prefs.speed || 'slow']) * dt;
+    scrollState.acc += (SPEEDS[prefs.speedN || 3] || 12) * dt;
     const px = Math.floor(scrollState.acc);
     if (px >= 1){ window.scrollBy(0, px); scrollState.acc -= px; }
     followScroll();
@@ -1109,7 +1161,7 @@ function startScroll(){
   scrollState.raf = requestAnimationFrame(step);
   updateScrollBtn();
 }
-function stopScroll(){ scrollState.on = false; cancelAnimationFrame(scrollState.raf); updateScrollBtn(); }
+function stopScroll(){ cancelCountdown(); scrollState.on = false; cancelAnimationFrame(scrollState.raf); updateScrollBtn(); }
 function scrollToCurrent(){
   const el = app.querySelector('.gcard.cur') || app.querySelector('.pin.cur');
   if (!el) return;
@@ -1493,7 +1545,7 @@ app.addEventListener('click', e => {
       render(); window.scrollTo(0, 0); break;
     }
     case 'demo': { const d = demoSong(); songs[d.id] = d; Store.save(d, true); Object.assign(ui, { view: 'song', songId: d.id, idx: 0, edit: false }); render(); window.scrollTo(0, 0); break; }
-    case 'open': Object.assign(ui, { place: null, view: 'song', songId: b.dataset.id, idx: 0, edit: false, chordErr: '' }); render(); window.scrollTo(0, 0); break;
+    case 'open': prefs.opened = { ...(prefs.opened || {}), [b.dataset.id]: Date.now() }; savePrefs(); Object.assign(ui, { place: null, view: 'song', songId: b.dataset.id, idx: 0, edit: false, chordErr: '' }); render(); window.scrollTo(0, 0); break;
     case 'home': stopScroll(); ui.place = null; ui.view = 'library'; render(); window.scrollTo(0, 0); break;
     case 'mode-play': ui.edit = false; render(); break;
     case 'mode-edit': stopScroll(); ui.edit = true; render(); break;
@@ -1597,6 +1649,7 @@ app.addEventListener('click', e => {
 });
 app.addEventListener('change', e => {
   const act = e.target.dataset.act;
+  if (e.target.id === 'sortSel'){ prefs.sort = e.target.value; savePrefs(); render(); return; }
   if (act === 'imp-file' && imp && e.target.files[0]){ handlePdf(e.target.files[0]); return; }
   if (act === 'import-json' && e.target.files[0]){ importSongs(e.target.files[0]); return; }
   if (act === 't-sound'){ prefs.sound = e.target.checked; savePrefs(); }
@@ -1604,6 +1657,7 @@ app.addEventListener('change', e => {
   if (act === 'br'){ const s = curSong(), g = groupsOf(s)[ui.idx]; s.moments[g.m[0]].br = e.target.checked; touch(); render(); }
 });
 app.addEventListener('input', e => {
+  if (e.target.id === 'speedIn'){ prefs.speedN = +e.target.value; savePrefs(); const v = document.getElementById('speedVal'); if (v) v.textContent = prefs.speedN; return; }
   if (ui.view === 'import' && imp){ impInput(e); return; }
   const s = curSong(); if (!s) return;
   if (e.target.id === 'moText'){
