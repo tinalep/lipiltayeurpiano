@@ -1,0 +1,1502 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mon carnet de piano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F4F8; --surface:#FFFFFF; --ink:#232646; --muted:#62668A; --line:#D9DBE7;
+  --lh:#14907C; --lh-soft:#D3EEE8; --rh:#D8436E; --rh-soft:#F8DCE4;
+  --kw:#FFFFFF; --kw-edge:#C9CBD8; --kb:#24263B; --focus:#3B5BDB;
+  --t-new:#3567C9; --t-learn:#B7700A; --t-done:#2E8540; --t-review:#7B4FC4; --t-fav:#C7365F;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#14162A; --surface:#1D2037; --ink:#ECEDF7; --muted:#A0A4C4; --line:#33375A;
+    --lh:#35C2A9; --lh-soft:#17463F; --rh:#F2729A; --rh-soft:#4D2236;
+    --kw:#EDEDF3; --kw-edge:#9C9FB4; --kb:#0C0D18; --focus:#8EA6FF;
+    --t-new:#86A8F0; --t-learn:#F0B354; --t-done:#6CC77F; --t-review:#B79AF0; --t-fav:#F28AA8;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#14162A; --surface:#1D2037; --ink:#ECEDF7; --muted:#A0A4C4; --line:#33375A;
+  --lh:#35C2A9; --lh-soft:#17463F; --rh:#F2729A; --rh-soft:#4D2236;
+  --kw:#EDEDF3; --kw-edge:#9C9FB4; --kb:#0C0D18; --focus:#8EA6FF;
+  --t-new:#86A8F0; --t-learn:#F0B354; --t-done:#6CC77F; --t-review:#B79AF0; --t-fav:#F28AA8;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px 80px}
+h1,h2{font-family:var(--display);line-height:1.1;margin:0}
+
+/* Library */
+.lib-head{padding:44px 0 26px}
+.lib-head h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:800;letter-spacing:-.02em}
+.lib-head p{color:var(--muted);margin:10px 0 0;max-width:56ch}
+.hero-keys{margin:26px 0 8px;max-width:520px}
+.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 15px;font-weight:700;display:inline-flex;align-items:center;gap:8px;min-height:44px}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.ghost{background:transparent;border-color:transparent}
+.btn.danger{color:var(--rh)}
+.btn[disabled]{opacity:.45;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.songs{display:grid;gap:12px;margin-top:22px}
+.song-card{display:grid;grid-template-columns:1fr auto;gap:6px 16px;align-items:center;text-align:left;width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px}
+.song-card:hover{border-color:var(--ink)}
+.song-card h2{font-size:1.3rem;font-weight:700}
+.song-card .meta{color:var(--muted);font-size:.92rem}
+.song-card .thumbs{grid-row:1/3;grid-column:2;display:flex;gap:6px}
+@media (max-width:600px){.song-card .thumbs{grid-row:auto;grid-column:1/-1}}
+.empty{background:var(--surface);border:1.5px dashed var(--line);border-radius:14px;padding:26px;margin-top:22px}
+.empty h2{font-size:1.3rem;margin-bottom:6px}
+.form{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:20px;margin-top:22px;display:grid;gap:14px}
+label.f{display:grid;gap:5px;font-weight:700}
+label.f small{font-weight:400;color:var(--muted)}
+input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--paper)}
+textarea{min-height:200px;resize:vertical;line-height:1.6}
+.status{font-size:.85rem;color:var(--muted)}
+
+/* Song view */
+.topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:14px 0 8px}
+.title-block h1{font-size:clamp(1.6rem,4.5vw,2.4rem);font-weight:800;letter-spacing:-.01em}
+.title-block .artist{color:var(--muted)}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:12px;padding:3px;background:var(--surface)}
+.seg button{border:0;background:transparent;border-radius:9px;padding:7px 14px;font-weight:700;min-height:38px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.stage{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding:10px 0 12px;border-bottom:1.5px solid var(--line)}
+.piano-scroll{overflow-x:auto;padding-bottom:4px}
+.piano{position:relative;width:100%;min-width:620px;height:clamp(120px,22vw,190px);user-select:none;-webkit-user-select:none}
+.k{position:absolute;top:0;border:0;padding:0;display:flex;align-items:flex-end;justify-content:center;font-family:var(--display);font-weight:700;transition:background-color .12s}
+.k.w{height:100%;background:var(--kw);border:1px solid var(--kw-edge);border-radius:0 0 8px 8px;z-index:1;color:#3a3d5c;font-size:.72rem;padding-bottom:8px}
+.k.b{height:62%;background:var(--kb);border-radius:0 0 6px 6px;z-index:2;color:#fff;font-size:.6rem;padding-bottom:6px}
+.k.lh{background:var(--lh);color:#fff;border-color:var(--lh)}
+.k.rh{background:var(--rh);color:#fff;border-color:var(--rh)}
+.k .dot{position:absolute;left:50%;bottom:30%;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:var(--muted);opacity:.55}
+.k.lh .dot,.k.rh .dot{background:#fff;opacity:.8}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.88rem;color:var(--muted);margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:4px;display:inline-block}
+.nav{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin-top:10px}
+.nav .now{min-width:0}
+.now-words{font-family:var(--display);font-size:clamp(1.25rem,3.4vw,1.7rem);font-weight:700;line-height:1.15;overflow-wrap:anywhere}
+.now-next{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.88rem;margin-top:4px;min-width:0}
+.now-next .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.big{min-width:52px;min-height:52px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);font-size:1.3rem;font-weight:800}
+.big.go{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.counter{font-size:.85rem;color:var(--muted)}
+.tools{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px;font-size:.92rem}
+.tools label{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.tools input{width:18px;height:18px;accent-color:var(--ink)}
+
+.editor{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-top:16px;display:grid;gap:14px}
+.editor h2{font-size:1.1rem}
+.hands{display:flex;gap:8px;flex-wrap:wrap}
+.hand{border:2px solid var(--line);background:var(--paper);border-radius:10px;padding:8px 14px;font-weight:700;display:inline-flex;gap:8px;align-items:center;min-height:44px}
+.hand[aria-pressed="true"].l{border-color:var(--lh);background:var(--lh-soft)}
+.hand[aria-pressed="true"].r{border-color:var(--rh);background:var(--rh-soft)}
+.hint{color:var(--muted);font-size:.9rem;margin:0}
+.combos{display:flex;flex-wrap:wrap;gap:8px}
+.combo{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:5px;line-height:0}
+.combo:hover{border-color:var(--ink)}
+.chordline{display:flex;gap:8px;flex-wrap:wrap}
+.chordline input{flex:1;min-width:140px}
+.err{color:var(--rh);font-size:.9rem;margin:0}
+
+.sheet{margin-top:22px}
+.line{display:flex;flex-wrap:wrap;gap:6px 6px;align-items:flex-end;padding:10px 0;border-bottom:1px dashed var(--line)}
+.mo{display:inline-flex;flex-direction:column;align-items:flex-start;gap:5px;border:1.5px solid transparent;background:transparent;border-radius:10px;padding:6px 8px;text-align:left;max-width:100%}
+.mo:hover{border-color:var(--line)}
+.mo .words{font-size:1.12rem;line-height:1.3;overflow-wrap:anywhere}
+.mo .words.none{color:var(--muted);font-style:italic}
+.mo[aria-current="true"]{background:var(--surface);border-color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+.add-end{margin-top:16px}
+.foot{margin-top:40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* Import vidéo */
+.imp-steps{display:grid;gap:16px;margin-top:8px}
+.panel{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px}
+.panel h2{font-size:1.2rem}
+.panel p{margin:0}
+.frame{position:relative;background:#000;border-radius:10px;overflow:hidden;line-height:0}
+.frame canvas{width:100%;height:auto;display:block;cursor:crosshair;touch-action:manipulation}
+.instr{font-family:var(--display);font-weight:700;font-size:1.15rem;line-height:1.25}
+.instr .n{display:inline-grid;place-items:center;width:1.7em;height:1.7em;border-radius:50%;background:var(--ink);color:var(--paper);margin-right:8px;font-size:.85em}
+input[type=range]{width:100%;accent-color:var(--ink)}
+select{font:inherit;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--paper);color:var(--ink);min-height:44px}
+.bar{height:12px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ink);width:0%}
+.preview{display:flex;flex-wrap:wrap;gap:6px}
+.file-drop{border:2px dashed var(--line);border-radius:14px;padding:26px;text-align:center;display:grid;gap:10px;justify-items:center}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:600px){.two{grid-template-columns:1fr}}
+
+/* Étiquettes */
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;font-weight:700;color:var(--tc);border:1.5px solid var(--tc);border-radius:999px;padding:2px 10px;line-height:1.4;white-space:nowrap}
+.tag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--tc)}
+.tag.fav::before{display:none}
+.tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-weight:700;min-height:40px;display:inline-flex;gap:7px;align-items:center}
+.chip .c{color:var(--muted);font-weight:400}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip[aria-pressed="true"] .c{color:var(--paper);opacity:.75}
+.status-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.st{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 13px;font-weight:700;min-height:40px;display:inline-flex;gap:7px;align-items:center;color:var(--ink)}
+.st::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--tc)}
+.st.fav::before{display:none}
+.st[aria-pressed="true"]{border-color:var(--tc);background:var(--tc);color:var(--paper)}
+.st[aria-pressed="true"]::before{background:var(--paper)}
+.howto{border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--paper)}
+.howto summary{font-weight:700;cursor:pointer;min-height:32px;display:flex;align-items:center}
+.howto dl{margin:10px 0 6px;display:grid;gap:4px}
+.howto dt{font-weight:700;margin-top:6px}
+.howto dd{margin:0;color:var(--ink)}
+a.btn{text-decoration:none;color:var(--ink)}
+.song-item{position:relative}
+.song-item .song-card{padding-right:64px}
+.del-x{position:absolute;top:50%;right:10px;transform:translateY(-50%);width:44px;height:44px;border-radius:10px;border:1.5px solid transparent;background:transparent;font-size:1.1rem;opacity:.55}
+.del-x:hover,.del-x:focus-visible{opacity:1;border-color:var(--rh);background:var(--rh-soft)}
+@media (max-width:600px){.del-x{top:10px;transform:none}}
+.confirm{background:var(--rh-soft);border:1.5px solid var(--rh);border-radius:14px;padding:16px 18px;display:grid;gap:10px}
+.confirm p{margin:0}
+.btn.danger-fill{background:var(--rh);border-color:var(--rh);color:#fff}
+.foot + .confirm{margin-top:12px}
+.seg.small button{padding:5px 11px;min-height:36px;display:inline-flex;align-items:center;gap:5px}
+.words-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.word{border:1.5px solid var(--line);background:var(--paper);border-radius:8px;padding:5px 10px;font-size:1.02rem;min-height:40px}
+.word:hover{border-color:var(--ink);background:var(--surface)}
+.more{border-top:1.5px solid var(--line);padding-top:10px}
+.more summary{font-weight:700;cursor:pointer;min-height:36px;display:flex;align-items:center;color:var(--muted)}
+.more-body{display:grid;gap:14px;margin-top:10px}
+.word.done{opacity:.35;cursor:default;border-style:dashed}
+.words-row.place{line-height:1.2;max-height:46vh;overflow:auto;padding:4px}
+.words-row .lb{flex-basis:100%;height:4px}
+.pin{display:inline-flex;align-items:center;padding:2px;border-radius:4px;background:var(--surface);border:1px solid var(--line)}
+.sheet{line-height:2.1}
+.lyr-line{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:1.15rem}
+.nowrap{display:inline-flex;align-items:center;gap:4px}
+.pin{border:1.5px solid var(--line);background:var(--surface);border-radius:6px;padding:3px;line-height:0;display:inline-flex}
+.pin.cur{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
+.lw{border-radius:5px;padding:1px 2px}
+.lw.on{background:var(--rh-soft);box-shadow:0 0 0 2px var(--rh-soft)}
+button.lw.tap{border:0;background:transparent;font:inherit;color:inherit;padding:1px 3px;cursor:pointer}
+button.lw.tap:hover{background:var(--line)}
+button.lw.tap.on{background:var(--rh-soft)}
+.seg-label{display:inline-flex;align-items:center;padding:0 8px;font-weight:700;font-size:.9rem}
+.names{display:grid;gap:10px}
+.name-row{display:flex;align-items:center;gap:14px}
+.name-row img{height:40px;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:6px 10px}
+.name-row input{max-width:160px}
+.backup{margin-top:48px;padding-top:20px;border-top:1.5px solid var(--line);display:grid;gap:10px}
+.backup h2{font-size:1.2rem}
+label.btn{cursor:pointer}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media (max-width:600px){
+  .wrap{padding:0 12px 80px}
+  .nav{grid-template-columns:auto 1fr auto;gap:8px}
+  .big{min-width:46px;min-height:46px}
+}
+</style>
+</head>
+<body>
+<div id="app" class="wrap" aria-live="off"></div>
+
+<script>
+(() => {
+"use strict";
+const LOW = 48, HIGH = 84;           // Do3 → Do6
+const NAMES = ['Do','Do♯','Ré','Ré♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
+const isBlack = m => [1,3,6,8,10].includes(((m % 12) + 12) % 12);
+const app = document.getElementById('app');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
+/* ---------- Accords → touches ---------- */
+const PC = {C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const FR = {do:0,'ré':2,re:2,mi:4,fa:5,sol:7,la:9,si:11};
+const Q = {'':[0,4,7],'maj':[0,4,7],'M':[0,4,7],'m':[0,3,7],'min':[0,3,7],'-':[0,3,7],
+  '7':[0,4,7,10],'maj7':[0,4,7,11],'M7':[0,4,7,11],'7M':[0,4,7,11],'m7':[0,3,7,10],'min7':[0,3,7,10],'-7':[0,3,7,10],
+  'sus2':[0,2,7],'sus4':[0,5,7],'sus':[0,5,7],'dim':[0,3,6],'°':[0,3,6],'aug':[0,4,8],'+':[0,4,8],
+  'add9':[0,2,4,7],'add2':[0,2,4,7],'madd9':[0,2,3,7],'5':[0,7],'6':[0,4,7,9],'m6':[0,3,7,9],'9':[0,2,4,7,10],'m9':[0,2,3,7,10],
+  '4':[0,5,7],'2':[0,2,7],'sus24':[0,2,5,7],'7sus4':[0,5,7,10],'7sus':[0,5,7,10],'7sus2':[0,2,7,10],'7/4':[0,5,7,10],'9sus4':[0,2,5,7,10],
+  'maj9':[0,2,4,7,11],'M9':[0,2,4,7,11],'add4':[0,4,5,7],'add11':[0,4,5,7],'11':[0,4,5,7,10],'m11':[0,3,5,7,10],'13':[0,4,7,9,10],
+  'm7b5':[0,3,6,10],'ø':[0,3,6,10],'dim7':[0,3,6,9],'°7':[0,3,6,9],'7#5':[0,4,8,10],'aug7':[0,4,8,10],'+7':[0,4,8,10],'7b5':[0,4,6,10],
+  '7b9':[0,1,4,7,10],'7#9':[0,3,4,7,10],'mM7':[0,3,7,11],'mmaj7':[0,3,7,11],'m7M':[0,3,7,11],'maj':[0,4,7],'Maj7':[0,4,7,11],'6/9':[0,2,4,7,9],'69':[0,2,4,7,9],'m69':[0,2,3,7,9]};
+// Accord inconnu : on garde au moins l'accord de base (mineur s'il commence par « m », sinon majeur)
+function quality(rest){
+  const r = String(rest || '').replace(/[()]/g, '');
+  if (Q[r]) return Q[r];
+  if (/^m(?!aj)/.test(r)) return Q['m'];
+  return Q[''];
+}
+function acc(ch){ return ch === '#' || ch === '♯' ? 1 : (ch === 'b' || ch === '♭') ? -1 : 0; }
+function parseRoot(s){
+  let m = s.match(/^(do|ré|re|mi|fa|sol|la|si)([#♯b♭]?)(.*)$/i);
+  if (m) return { pc: (FR[m[1].toLowerCase()] + acc(m[2]) + 12) % 12, rest: m[3] };
+  m = s.match(/^([A-Ga-g])([#♯b♭]?)(.*)$/);
+  if (m) return { pc: (PC[m[1].toUpperCase()] + acc(m[2]) + 12) % 12, rest: m[3] };
+  return null;
+}
+function chordToKeys(str){
+  const s = String(str).trim().replace(/\s+/g, '');
+  if (!s) return null;
+  const [main, bassStr] = s.split('/');
+  const r = parseRoot(main); if (!r) return null;
+  const iv = Q[r.rest]; if (!iv) return null;
+  let bass = r.pc;
+  if (bassStr){ const b = parseRoot(bassStr); if (!b || b.rest) return null; bass = b.pc; }
+  return { lh: [LOW + bass], rh: iv.map(i => 60 + r.pc + i).sort((a, b) => a - b) };
+}
+
+/* ---------- Son de piano (synthèse) ---------- */
+let actx = null, master = null, voices = [];
+function audio(){
+  if (!actx){
+    actx = new (window.AudioContext || window.webkitAudioContext)();
+    const comp = actx.createDynamicsCompressor();
+    comp.threshold.value = -18; comp.ratio.value = 3; comp.connect(actx.destination);
+    master = actx.createGain(); master.gain.value = 0.9;
+    // petite réverbération de salle
+    const len = Math.floor(actx.sampleRate * 2.2), ir = actx.createBuffer(2, len, actx.sampleRate);
+    for (let c = 0; c < 2; c++){ const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
+    const rev = actx.createConvolver(); rev.buffer = ir;
+    const wet = actx.createGain(); wet.gain.value = 0.22;
+    master.connect(comp); master.connect(rev); rev.connect(wet); wet.connect(comp);
+  }
+  if (actx.state === 'suspended') actx.resume();
+  return actx;
+}
+function pianoNote(m, t, vel){
+  const ctx = actx, f0 = 440 * Math.pow(2, (m - 69) / 12);
+  const out = ctx.createGain(); out.gain.value = vel;
+  // le son s'assombrit en s'éteignant, comme une corde
+  const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.4;
+  const bright = Math.min(12000, f0 * (6 + 10 * vel));
+  lp.frequency.setValueAtTime(bright, t); lp.frequency.exponentialRampToValueAtTime(Math.max(f0 * 2, 400), t + 2.5);
+  lp.connect(out); out.connect(master);
+  const tau = Math.max(0.7, Math.min(7, 4 * Math.sqrt(220 / f0)));
+  const B = 0.00012 * Math.pow(f0 / 110, 0.8);       // légère inharmonicité des cordes
+  const N = f0 < 300 ? 10 : f0 < 900 ? 7 : 4;
+  const oscs = [];
+  for (let n = 1; n <= N; n++){
+    const fn = n * f0 * Math.sqrt(1 + B * n * n);
+    if (fn > 16000) break;
+    const amp = 0.5 / Math.pow(n, 1.15) * (n === 1 ? 1 : 0.9);
+    const dec = tau / (1 + 0.55 * (n - 1));
+    const detunes = n <= 3 ? [-1.2, 1.4] : [0];
+    detunes.forEach(cents => {
+      const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = fn; o.detune.value = cents;
+      const g = ctx.createGain();
+      const a = amp / detunes.length;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(a, t + 0.004);
+      g.gain.setTargetAtTime(a * 0.35, t + 0.004, dec * 0.12);   // attaque qui retombe vite
+      g.gain.setTargetAtTime(0.0001, t + 0.004 + dec * 0.3, dec * 0.5); // puis longue résonance
+      o.connect(g); g.connect(lp); o.start(t); o.stop(t + dec * 3 + 0.5);
+      oscs.push(o);
+    });
+  }
+  // frappe du marteau
+  const nl = Math.floor(ctx.sampleRate * 0.04), nb = ctx.createBuffer(1, nl, ctx.sampleRate), nd = nb.getChannelData(0);
+  for (let i = 0; i < nl; i++) nd[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / nl, 4);
+  const ns = ctx.createBufferSource(); ns.buffer = nb;
+  const nf = ctx.createBiquadFilter(); nf.type = 'bandpass'; nf.frequency.value = Math.min(5000, f0 * 4); nf.Q.value = 0.8;
+  const ng = ctx.createGain(); ng.gain.value = 0.08 * vel;
+  ns.connect(nf); nf.connect(ng); ng.connect(out); ns.start(t);
+  return { out, oscs };
+}
+/* Vrai piano enregistré (banque de sons « Fluid R3 », piano à queue) chargé depuis un CDN ;
+   si le chargement échoue, on garde le piano de synthèse ci-dessus. */
+const SF_URLS = [
+  'https://cdn.jsdelivr.net/npm/midicube@0.9.1/examples/soundfont/acoustic_grand_piano-mp3.js',
+  'https://cdn.jsdelivr.net/npm/midicube/examples/soundfont/acoustic_grand_piano-mp3.js',
+  'https://cdn.jsdelivr.net/npm/music21j/soundfonts/acoustic_grand_piano-mp3.js',
+  'https://cdn.jsdelivr.net/npm/midi.js/examples/soundfont/acoustic_grand_piano-mp3.js',
+  'https://cdn.jsdelivr.net/npm/midi-js-soundfonts/FluidR3_GM/acoustic_grand_piano-mp3.js'
+];
+let sfState = 'idle', sfData = null;
+const sfBuf = {};
+function loadSoundfont(){
+  if (sfState !== 'idle') return;
+  sfState = 'loading'; soundNote();
+  window.MIDI = window.MIDI || {}; window.MIDI.Soundfont = window.MIDI.Soundfont || {};
+  let i = 0;
+  const next = () => {
+    if (i >= SF_URLS.length){ sfState = 'failed'; soundNote(); return; }
+    const sc = document.createElement('script'); sc.src = SF_URLS[i++]; sc.async = true;
+    sc.onload = () => {
+      const d = window.MIDI && window.MIDI.Soundfont && window.MIDI.Soundfont.acoustic_grand_piano;
+      if (d && Object.keys(d).length > 20){ sfData = d; sfState = 'ready'; soundNote(); const s = curSong && curSong(); if (s) preloadSong(s); }
+      else next();
+    };
+    sc.onerror = next;
+    document.head.appendChild(sc);
+  };
+  next();
+}
+const FLAT = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+function sfName(m){ return FLAT[m % 12] + (Math.floor(m / 12) - 1); }
+function getBuffer(m){
+  if (sfBuf[m]) return sfBuf[m];
+  const uri = sfData && sfData[sfName(m)];
+  if (!uri) return Promise.resolve(null);
+  sfBuf[m] = new Promise(res => {
+    try {
+      const b64 = uri.slice(uri.indexOf(',') + 1), bin = atob(b64), bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      audio().decodeAudioData(bytes.buffer, buf => res(buf), () => res(null));
+    } catch (e) { res(null); }
+  });
+  return sfBuf[m];
+}
+function preloadSong(s){
+  if (sfState !== 'ready' || !s) return;
+  const all = new Set(); s.moments.forEach(mo => [...mo.lh, ...mo.rh].forEach(n => all.add(n)));
+  [...all].forEach(getBuffer);
+}
+function soundNote(){
+  const el = document.getElementById('sndNote'); if (!el) return;
+  el.textContent = sfState === 'loading' ? 'Chargement du son de piano…' : sfState === 'failed' ? 'Son de piano indisponible : son de secours.' : '';
+}
+function play(notes, damp = true){
+  if (!prefs.sound || !notes.length) return;
+  try {
+    audio();
+    const t0 = actx.currentTime + 0.01;
+    if (damp){
+      voices.forEach(v => { try { v.out.gain.cancelScheduledValues(t0); v.out.gain.setTargetAtTime(0, t0, 0.09); } catch (e) {} });
+      voices = [];
+    }
+    const sorted = [...new Set(notes)].sort((a, b) => a - b);
+    if (sfState === 'ready'){
+      const vel = 1.1 / Math.sqrt(sorted.length);
+      sorted.forEach((m, i) => {
+        const out = actx.createGain(); out.gain.value = vel; out.connect(master);
+        voices.push({ out, oscs: [] });
+        getBuffer(m).then(buf => {
+          if (!buf) return;
+          const src = actx.createBufferSource(); src.buffer = buf; src.connect(out);
+          src.start(Math.max(actx.currentTime, t0 + i * 0.012));
+        });
+      });
+      return;
+    }
+    const vel = 0.85 / Math.sqrt(sorted.length);
+    sorted.forEach((m, i) => voices.push(pianoNote(m, t0 + i * 0.012, vel)));
+  } catch (e) {}
+}
+
+/* ---------- Préférences (cet appareil) ---------- */
+const prefs = { sound: true, names: false };
+try { Object.assign(prefs, JSON.parse(localStorage.getItem('carnet-piano-prefs') || '{}')); } catch (e) {}
+function savePrefs(){ try { localStorage.setItem('carnet-piano-prefs', JSON.stringify(prefs)); } catch (e) {} }
+
+/* ---------- Données ---------- */
+let songs = {};
+const ui = { filter: 'all', view: 'library', songId: null, idx: 0, edit: false, hand: 'rh', creating: false, chordErr: '', caret: null };
+const Store = {
+  mode: 'local', col: null, timers: {}, chains: {}, recent: {},
+  cacheLocal(){ try { localStorage.setItem('carnet-piano-songs', JSON.stringify(songs)); } catch (e) {} },
+  async init(){
+    try { const raw = localStorage.getItem('carnet-piano-songs'); if (raw) songs = JSON.parse(raw) || {}; } catch (e) {}
+    render();
+    if (!(window.claude && typeof window.claude.use === 'function')) return;
+    try {
+      const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+      const id = user ? await user.id() : null;
+      if (!db || !id) return;
+      this.col = db.collection('data/users/' + id);
+      this.mode = 'cloud';
+      let first = true;
+      this.col.onSnapshot(snap => {
+        const seen = new Set();
+        snap.docs.forEach(d => {
+          seen.add(d.id);
+          if (this.recent[d.id] && Date.now() - this.recent[d.id] < 5000) return;
+          songs[d.id] = Object.assign(JSON.parse(JSON.stringify(d.data())), { id: d.id });
+        });
+        if (first){
+          first = false;
+          Object.values(songs).forEach(s => { if (!seen.has(s.id)) this.save(s, true); });
+        } else {
+          Object.keys(songs).forEach(k => { if (!seen.has(k) && !this.timers[k] && !this.recent[k]) delete songs[k]; });
+        }
+        this.cacheLocal();
+        const a = document.activeElement;
+        if (ui.view !== 'import' && !(a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA'))) render();
+      }, () => { this.mode = 'local'; if (ui.view !== 'import') render(); });
+      if (ui.view !== 'import') render();
+    } catch (e) {}
+  },
+  save(song, now){
+    song.updatedAt = Date.now();
+    this.recent[song.id] = Date.now();
+    this.cacheLocal();
+    if (!this.col) return;
+    clearTimeout(this.timers[song.id]);
+    const run = () => {
+      delete this.timers[song.id];
+      const body = JSON.parse(JSON.stringify(song)); delete body.id;
+      this.chains[song.id] = (this.chains[song.id] || Promise.resolve())
+        .then(() => this.col.doc(song.id).set(body))
+        .then(() => { this.recent[song.id] = Date.now(); })
+        .catch(err => { if (err && err.code === 'quota_exceeded') { ui.notice = "Le carnet est plein : supprime une chanson pour en ajouter une autre."; if (ui.view !== 'import') render(); } });
+    };
+    if (now) run(); else this.timers[song.id] = setTimeout(run, 700);
+  },
+  remove(id){
+    delete songs[id]; this.cacheLocal();
+    clearTimeout(this.timers[id]); delete this.timers[id];
+    if (this.col) (this.chains[id] || Promise.resolve()).then(() => this.col.doc(id).delete()).catch(() => {});
+  }
+};
+
+/* ---------- Dessin du piano ---------- */
+const DEF = { lo: LOW, hi: HIGH };
+const wcache = {};
+function whitesOf(r){
+  const key = r.lo + '-' + r.hi;
+  if (!wcache[key]){
+    const a = [], idx = {}; let i = 0;
+    for (let m = r.lo; m <= r.hi; m++){ idx[m] = i; if (!isBlack(m)){ a.push(m); i++; } }
+    wcache[key] = { list: a, idx };
+  }
+  return wcache[key];
+}
+function songRange(s){
+  let lo = LOW, hi = HIGH;
+  (s.moments || []).forEach(m => [...m.lh, ...m.rh].forEach(n => { if (n < lo) lo = n; if (n > hi) hi = n; }));
+  lo = lo - (((lo % 12) + 12) % 12);
+  hi = hi + ((12 - (hi % 12)) % 12);
+  return { lo: Math.max(21, lo), hi: Math.min(108, hi) };
+}
+function bigPiano(lh, rh, R = DEF){
+  const W = whitesOf(R), nw = W.list.length, w = 100 / nw, bw = w * 0.62;
+  let h = '';
+  for (let m = R.lo; m <= R.hi; m++){
+    const cls = rh.includes(m) ? ' rh' : lh.includes(m) ? ' lh' : '';
+    const name = NAMES[m % 12];
+    const label = prefs.names ? name : (m % 12 === 0 ? name : '');
+    const hand = rh.includes(m) ? ', main droite' : lh.includes(m) ? ', main gauche' : '';
+    if (isBlack(m)){
+      const left = W.idx[m] * w - bw / 2;
+      h += `<button class="k b${cls}" style="left:${left}%;width:${bw}%" data-act="key" data-m="${m}" aria-label="${name}${hand}">${prefs.names ? esc(name) : ''}</button>`;
+    } else {
+      const left = W.idx[m] * w;
+      h += `<button class="k w${cls}" style="left:${left}%;width:${w}%" data-act="key" data-m="${m}" aria-label="${name}${m === 60 ? ' du milieu' : ''}${hand}">${m === 60 ? '<i class="dot"></i>' : ''}${esc(label)}</button>`;
+    }
+  }
+  return `<div class="piano-scroll"><div class="piano" style="min-width:${Math.max(620, nw * 26)}px" role="group" aria-label="Clavier">${h}</div></div>`;
+}
+function mini(lh = [], rh = [], Wd = 96, H = 26, R = DEF){
+  const Wh = whitesOf(R), ww = Wd / Wh.list.length; let wk = '', bk = '';
+  Wh.list.forEach((m, i) => {
+    const fill = rh.includes(m) ? 'var(--rh)' : lh.includes(m) ? 'var(--lh)' : 'var(--kw)';
+    wk += `<rect x="${(i * ww).toFixed(2)}" y="0" width="${ww.toFixed(2)}" height="${H}" fill="${fill}" stroke="var(--kw-edge)" stroke-width=".5"/>`;
+  });
+  for (let m = R.lo; m <= R.hi; m++) if (isBlack(m)){
+    const fill = rh.includes(m) ? 'var(--rh)' : lh.includes(m) ? 'var(--lh)' : 'var(--kb)';
+    const x = Wh.idx[m] * ww - ww * 0.31;
+    bk += `<rect x="${x.toFixed(2)}" y="0" width="${(ww * 0.62).toFixed(2)}" height="${(H * 0.6).toFixed(2)}" fill="${fill}"/>`;
+  }
+  return `<svg width="${Wd}" height="${H}" viewBox="0 0 ${Wd} ${H}" aria-hidden="true" style="display:block;border-radius:3px">${wk}${bk}</svg>`;
+}
+
+/* ---------- Exemple (chanson traditionnelle, libre de droits) ---------- */
+function demoSong(){
+  const lines = [
+    [["À la claire","C"],["fontaine","G"]],
+    [["M'en allant","C"],["promener","G"]],
+    [["J'ai trouvé l'eau","C"],["si belle","F"]],
+    [["Que je m'y","C"],["suis","G"],["baignée","C"]],
+    [["Il y a longtemps","C"],["que je t'aime","F"]],
+    [["Jamais je ne","C"],["t'oublie-","G"],["rai","C"]]
+  ];
+  const moments = [];
+  lines.forEach(l => l.forEach(([t, c], j) => { const k = chordToKeys(c); moments.push({ id: uid(), text: t, lh: k.lh, rh: k.rh, br: j === 0 }); }));
+  return { id: uid(), title: 'À la claire fontaine', artist: 'Chanson traditionnelle (exemple)', moments, updatedAt: Date.now() };
+}
+
+/* ---------- Étiquettes ---------- */
+const STATUS = {
+  new: { label: 'Nouvelle', c: 'var(--t-new)' },
+  learning: { label: 'En cours', c: 'var(--t-learn)' },
+  learned: { label: 'Apprise', c: 'var(--t-done)' },
+  review: { label: 'À revoir', c: 'var(--t-review)' }
+};
+const REVIEW_AFTER = 30 * 24 * 3600 * 1000;
+function statusOf(s){
+  const st = STATUS[s.status] ? s.status : 'new';
+  if (st === 'learned' && s.checkedAt && Date.now() - s.checkedAt > REVIEW_AFTER) return 'review';
+  return st;
+}
+function tagHtml(s){
+  const st = statusOf(s);
+  return `<span class="tag" style="--tc:${STATUS[st].c}">${STATUS[st].label}</span>` +
+    (s.fav ? `<span class="tag fav" style="--tc:var(--t-fav)">♥ Coup de cœur</span>` : '');
+}
+
+/* ---------- Rendu ---------- */
+function render(){
+  if (ui.view === 'import') renderImport();
+  else if (ui.view === 'song' && songs[ui.songId]) renderSong();
+  else { ui.view = 'library'; renderLibrary(); }
+}
+function storageNote(){
+  return Store.mode === 'cloud' ? 'Tes chansons sont sauvegardées automatiquement dans ton compte.'
+    : 'Tes chansons sont sauvegardées sur cet appareil.';
+}
+function confirmBox(s){
+  return `<div class="confirm" role="alertdialog" aria-label="Confirmer la suppression">
+    <p><strong>Supprimer « ${esc(s.title || 'Sans titre')} » ?</strong> Cette action est définitive.</p>
+    <div class="row"><button class="btn danger-fill" data-act="del-yes" data-id="${esc(s.id)}">Oui, supprimer</button><button class="btn" data-act="del-no">Annuler</button></div></div>`;
+}
+function noticeHtml(){ return ui.notice ? `<p class="err" role="alert" style="margin-top:12px">${esc(ui.notice)}</p>` : ''; }
+function renderLibrary(){
+  const all = Object.values(songs).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  const F = ui.filter || 'all';
+  const list = all.filter(s => F === 'all' || (F === 'fav' ? s.fav : statusOf(s) === F));
+  const heroL = [48], heroR = [60, 64, 67];
+  let h = `<header class="lib-head">
+    <h1>Mon carnet de piano</h1>
+    <p>Pour chaque chanson, les paroles et les touches à jouer, en couleur. Tu n'as plus à tout recopier dans un cahier.</p>
+    <div class="hero-keys">${mini(heroL, heroR, 520, 90).replace('width="520" height="90"', 'width="100%" height="auto"')}</div>
+    <div class="legend"><span><i class="sw" style="background:var(--lh)"></i>Main gauche</span><span><i class="sw" style="background:var(--rh)"></i>Main droite</span></div>
+  </header>
+  <div class="row"><button class="btn primary" data-act="import">Ajouter depuis une grille PDF</button><button class="btn" data-act="new">Écrire une chanson à la main</button><span class="status">${storageNote()}</span></div>${noticeHtml()}`;
+  if (ui.creating){
+    h += `<div class="form" role="region" aria-label="Nouvelle chanson">
+      <label class="f">Titre<input type="text" id="nTitle" autocomplete="off"></label>
+      <label class="f">Artiste <small>(facultatif)</small><input type="text" id="nArtist" autocomplete="off"></label>
+      <label class="f">Paroles <small>Colle les paroles : chaque ligne de texte deviendra une ligne de la chanson. Tu pourras ensuite les couper en petits morceaux.</small><textarea id="nLyrics"></textarea></label>
+      <div class="row"><button class="btn primary" data-act="create">Créer la chanson</button><button class="btn ghost" data-act="cancel-new">Annuler</button></div>
+    </div>`;
+  }
+  if (!list.length && !ui.creating){
+    h += `<div class="empty"><h2>Ton carnet est vide</h2>
+      <p class="hint">Ajoute une grille d'accords en PDF depuis La Boîte à chansons, écris une chanson à la main, ou ouvre un exemple pour voir comment ça marche.</p>
+      <div class="row" style="margin-top:12px"><button class="btn" data-act="demo">Ouvrir un exemple</button></div></div>`;
+  }
+  if (all.length){
+    const cnt = k => all.filter(s => k === 'all' || (k === 'fav' ? s.fav : statusOf(s) === k)).length;
+    const opts = [['all', 'Toutes'], ['new', 'Nouvelles'], ['learning', 'En cours'], ['learned', 'Apprises'], ['review', 'À revoir'], ['fav', '♥ Coups de cœur']];
+    h += `<div class="chips" role="group" aria-label="Filtrer les chansons">` + opts.filter(([k]) => k === 'all' || k === F || cnt(k))
+      .map(([k, l]) => `<button class="chip" data-act="filter" data-f="${k}" aria-pressed="${F === k}">${l}<span class="c">${cnt(k)}</span></button>`).join('') + `</div>`;
+    if (!list.length) h += `<p class="hint" style="margin-top:14px">Aucune chanson dans cette catégorie.</p>`;
+  }
+  h += `<div class="songs">` + list.map(s => {
+    if (ui.confirmDel === s.id) return confirmBox(s);
+    const R = songRange(s); const th = (s.moments || []).filter(m => m.lh.length || m.rh.length).slice(0, 4).map(m => mini(m.lh, m.rh, 64, 18, R)).join('');
+    return `<div class="song-item"><button class="song-card" data-act="open" data-id="${esc(s.id)}">
+      <h2>${esc(s.title || 'Sans titre')}</h2><div class="thumbs">${th}</div>
+      <div class="meta tags">${tagHtml(s)}<span>${esc(s.artist || '')}${s.artist ? ' – ' : ''}${(s.moments || []).length} moments</span></div></button>
+      <button class="del-x" data-act="del-card" data-id="${esc(s.id)}" aria-label="Supprimer « ${esc(s.title || 'Sans titre')} »" title="Supprimer">🗑</button></div>`;
+  }).join('') + `</div>`;
+  h += `<section class="backup">
+    <h2>Sauvegarde</h2>
+    <p class="hint">Télécharge toutes tes chansons dans un fichier, pour les garder en sécurité ou les retrouver dans une autre version du carnet.</p>
+    <div class="row"><button class="btn" data-act="export" ${all.length ? '' : 'disabled'}>Télécharger mes chansons</button>
+      <label class="btn">Importer une sauvegarde<input type="file" accept=".json,application/json" data-act="import-json" hidden></label></div>
+  </section>`;
+  app.innerHTML = h;
+  if (ui.creating){ const t = document.getElementById('nTitle'); t && t.focus(); }
+}
+
+function curSong(){ return songs[ui.songId]; }
+function curMo(){ const s = curSong(); return s && s.moments[ui.idx]; }
+function combos(song){
+  const seen = new Map();
+  song.moments.forEach(m => {
+    if (!m.lh.length && !m.rh.length) return;
+    const key = [...m.lh].sort().join(',') + '|' + [...m.rh].sort().join(',');
+    if (!seen.has(key)) seen.set(key, { lh: [...m.lh], rh: [...m.rh] });
+  });
+  return [...seen.values()].slice(0, 16);
+}
+function visKeys(s, mo){
+  const show = s.show || 'both';
+  return { lh: show === 'rh' ? [] : mo.lh, rh: show === 'lh' ? [] : mo.rh };
+}
+// Quand une main est cachée, les moments qui ne changent que pour l'autre main sont fusionnés
+function groupsOf(s){
+  const show = s.show || 'both', G = [];
+  s.moments.forEach((mo, i) => {
+    const v = visKeys(s, mo), sig = v.lh.join() + '|' + v.rh.join();
+    const empty = !v.lh.length && !v.rh.length, any = mo.lh.length || mo.rh.length;
+    const last = G[G.length - 1];
+    if (show !== 'both' && last && any && (empty || (sig === last.sig && !last.empty))){ last.m.push(i); return; }
+    G.push({ m: [i], sig, empty });
+  });
+  return G.map(g => {
+    const first = s.moments[g.m[0]];
+    return { m: g.m, keys: visKeys(s, first), text: g.m.map(i => s.moments[i].text).filter(Boolean).join(' '), br: !!first.br };
+  });
+}
+function setGroupText(s, g, text){ g.m.forEach((i, j) => { s.moments[i].text = j === 0 ? text : ''; }); }
+function displayKeys(G, i){
+  for (let j = i; j >= 0; j--){
+    const v = G[j].keys;
+    if (v.lh.length || v.rh.length) return { ...v, held: j !== i };
+    if (ui.edit) break;
+  }
+  return { lh: [], rh: [], held: false };
+}
+function wordsOf(t){ return (t || '').split(/\s+/).filter(Boolean); }
+function placePanel(G, R){
+  const P = ui.place;
+  if (P.phase === 'text'){
+    return `<section class="editor" aria-label="Placer les paroles">
+      <h2>Placer les paroles</h2>
+      <p class="hint">Vérifie les paroles (une ligne de texte par ligne de la chanson). Ensuite, pour chaque accord, tu toucheras le mot sur lequel il commence.</p>
+      <textarea id="placeText">${esc(P.text)}</textarea>
+      <div class="row"><button class="btn primary" data-act="place-start">Commencer</button><button class="btn ghost" data-act="place-cancel">Annuler</button></div>
+    </section>`;
+  }
+  const k = P.k, lastStart = [...P.starts].reverse().find(x => x !== null);
+  const minJ = lastStart === undefined ? 0 : lastStart + 1;
+  const startAt = {}; P.starts.forEach((st, gi) => { if (st !== null) startAt[st] = gi; });
+  let words = '';
+  P.words.forEach((w, j) => {
+    if (w.ls && j > 0) words += '<span class="lb"></span>';
+    if (startAt[j] !== undefined) words += `<span class="pin">${mini(G[startAt[j]].keys.lh, G[startAt[j]].keys.rh, 40, 12, R)}</span>`;
+    const ok = j >= minJ;
+    words += `<button class="word${ok ? '' : ' done'}" data-act="place-word" data-j="${j}" ${ok ? '' : 'disabled'}>${esc(w.w)}</button>`;
+  });
+  return `<section class="editor" aria-label="Placer les paroles">
+    <h2>Accord ${k + 1} sur ${G.length}</h2>
+    <div class="row" style="gap:12px">${mini(G[k].keys.lh, G[k].keys.rh, 120, 32, R)}<p class="hint" style="flex:1;min-width:200px">Touche le mot sur lequel commence cet accord (il est affiché sur le clavier au-dessus).</p></div>
+    <div class="words-row place">${words}</div>
+    <div class="row">
+      <button class="btn" data-act="place-none">Pas de paroles sur cet accord</button>
+      <button class="btn" data-act="place-undo" ${k ? '' : 'disabled'}>Annuler le dernier</button>
+      <button class="btn ghost" data-act="place-cancel">Arrêter sans enregistrer</button>
+    </div>
+  </section>`;
+}
+function applyPlacement(s, G){
+  const P = ui.place, W = P.words, starts = P.starts.slice();
+  while (starts.length < G.length) starts.push(null);
+  const filled = starts.map((st, gi) => st === null ? null : gi).filter(x => x !== null);
+  G.forEach(g => setGroupText(s, g, ''));
+  filled.forEach((gi, n) => {
+    const a = n === 0 ? 0 : starts[gi], b = n + 1 < filled.length ? starts[filled[n + 1]] : W.length;
+    setGroupText(s, G[gi], W.slice(a, b).map(w => w.w).join(' '));
+  });
+  G.forEach((g, gi) => { s.moments[g.m[0]].br = gi === 0 || (starts[gi] !== null && W[starts[gi]] && W[starts[gi]].ls); });
+  if (!filled.length && W.length) setGroupText(s, G[0], W.map(w => w.w).join(' '));
+}
+/* Paroles : le texte est rangé par lignes (s.lines) ; chaque moment retient le mot où il commence (m.w) */
+function ensureLines(s){
+  if (Array.isArray(s.lines)) return;
+  const lines = []; let cur = [], wi = 0;
+  s.moments.forEach((m, i) => {
+    const ws = wordsOf(m.text);
+    if (i > 0 && m.br && cur.length){ lines.push(cur.join(' ')); cur = []; }
+    m.w = ws.length ? wi : null;
+    ws.forEach(w => { cur.push(w); wi++; });
+  });
+  if (cur.length) lines.push(cur.join(' '));
+  s.lines = lines;
+}
+function lyricWords(s){ const W = []; (s.lines || []).forEach(l => wordsOf(l).forEach((w, i) => W.push({ w, ls: i === 0 }))); return W; }
+function syncText(s){
+  const W = lyricWords(s); let last = -1;
+  s.moments.forEach(m => { if (m.w == null || m.w >= W.length || m.w <= last) m.w = null; else last = m.w; });
+  const st = s.moments.map((m, i) => [m.w, i]).filter(([w]) => w != null);
+  s.moments.forEach(m => { m.text = ''; });
+  st.forEach(([w, i], n) => { const end = n + 1 < st.length ? st[n + 1][0] : W.length; s.moments[i].text = W.slice(w, end).map(x => x.w).join(' '); });
+  s.moments.forEach((m, i) => { m.br = i === 0 || (m.w != null && W[m.w].ls); });
+}
+function groupStart(s, g){ for (const i of g.m) if (s.moments[i].w != null) return s.moments[i].w; return null; }
+function setGroupStart(s, g, w){ g.m.forEach((i, n) => { s.moments[i].w = n === 0 ? w : null; }); }
+function sheetHtml(s, G, R){
+  const W = lyricWords(s), starts = G.map(g => groupStart(s, g));
+  const anchor = new Array(G.length); let nxt = W.length;
+  for (let k = G.length - 1; k >= 0; k--){ anchor[k] = starts[k] != null ? starts[k] : nxt; nxt = anchor[k]; }
+  const pinsAt = {}; anchor.forEach((a, k) => { (pinsAt[a] = pinsAt[a] || []).push(k); });
+  const owner = new Array(W.length).fill(-1); let ok = -1;
+  for (let j = 0, k = 0; j < W.length; j++){ while (k < G.length && anchor[k] <= j){ if (starts[k] != null) ok = k; k++; } owner[j] = ok; }
+  const pin = k => `<button class="pin${k === ui.idx ? ' cur' : ''}" data-act="go" data-i="${k}" aria-label="Accord ${k + 1}" ${k === ui.idx ? 'aria-current="true"' : ''}>${mini(G[k].keys.lh, G[k].keys.rh, 52, 15, R)}</button>`;
+  let out = '<div class="lyr-line">';
+  W.forEach((w, j) => {
+    if (w.ls && j > 0) out += '</div><div class="lyr-line">';
+    const pins = (pinsAt[j] || []).map(pin).join('');
+    const cls = 'lw' + (owner[j] === ui.idx ? ' on' : '');
+    const word = ui.edit ? `<button class="${cls} tap" data-act="tap-word" data-j="${j}">${esc(w.w)}</button>` : `<span class="${cls}">${esc(w.w)}</span>`;
+    out += pins ? `<span class="nowrap">${pins}${word}</span>` : word;
+  });
+  out += (pinsAt[W.length] || []).map(pin).join('') + '</div>';
+  return out;
+}
+function renderSong(){
+  const s = curSong();
+  if (!s.moments.length) s.moments.push({ id: uid(), text: '', lh: [], rh: [], br: true });
+  ensureLines(s);
+  const G = groupsOf(s);
+  ui.place = null;
+  ui.idx = Math.max(0, Math.min(ui.idx, G.length - 1));
+  const show = s.show || 'both';
+  if (show !== 'both') ui.hand = show;
+  const g = G[ui.idx], nx = G[ui.idx + 1], R = songRange(s);
+  const dk = displayKeys(G, ui.idx);
+  const handName = show === 'lh' ? ' (main gauche)' : show === 'rh' ? ' (main droite)' : '';
+  let h = `<div class="topbar">
+    <button class="btn ghost" data-act="home">← Mes chansons</button>
+    <div class="seg" role="group" aria-label="Mode">
+      <button data-act="mode-play" aria-pressed="${!ui.edit}">Jouer</button>
+      <button data-act="mode-edit" aria-pressed="${ui.edit}">Modifier</button>
+    </div></div>
+  <div class="title-block">${ui.edit
+    ? `<div class="row" style="gap:8px"><input type="text" id="sTitle" value="${esc(s.title)}" aria-label="Titre" style="font-family:var(--display);font-weight:800;font-size:1.4rem;max-width:520px">
+       <input type="text" id="sArtist" value="${esc(s.artist || '')}" aria-label="Artiste" placeholder="Artiste" style="max-width:320px"></div>`
+    : `<h1>${esc(s.title || 'Sans titre')}</h1>${s.artist ? `<div class="artist">${esc(s.artist)}</div>` : ''}`}
+    <div class="status-row" role="group" aria-label="Où j'en suis avec cette chanson">
+      ${Object.entries(STATUS).map(([k, v]) => `<button class="st" style="--tc:${v.c}" data-act="status" data-s="${k}" aria-pressed="${statusOf(s) === k}">${v.label}</button>`).join('')}
+      <button class="st fav" style="--tc:var(--t-fav)" data-act="fav" aria-pressed="${!!s.fav}">${s.fav ? '♥' : '♡'} Coup de cœur</button>
+    </div>
+    ${s.status === 'learned' && statusOf(s) === 'review' ? `<p class="hint" style="margin-top:6px">Apprise il y a plus d'un mois. Rejoue-la, puis touche « Apprise » pour confirmer que tu la sais encore.</p>` : ''}</div>
+  <section class="stage" aria-label="Clavier et accord en cours">
+    ${bigPiano(dk.lh, dk.rh, R)}
+    <div class="nav">
+      <button class="big" data-act="prev" aria-label="Accord précédent" ${ui.idx === 0 ? 'disabled' : ''}>◀</button>
+      <div class="now">
+        <div class="now-words">${g.text ? esc(g.text) : '<span style="color:var(--muted)">(sans paroles)</span>'}</div>
+        <div class="now-next"><span class="counter">${ui.idx + 1} / ${G.length}</span>
+          ${dk.held ? '<span>· Garde les mêmes touches</span>' : ''}
+          ${nx ? `<span>· Ensuite :</span>${mini(nx.keys.lh, nx.keys.rh, 64, 18, R)}` : '<span>· Fin de la chanson</span>'}</div>
+      </div>
+      <button class="big go" data-act="next" aria-label="Accord suivant" ${nx ? '' : 'disabled'}>▶</button>
+    </div>
+    <div class="tools">
+      <div class="seg small" role="group" aria-label="Mains affichées">
+        <button data-act="show" data-v="both" aria-pressed="${show === 'both'}">Les deux mains</button>
+        <button data-act="show" data-v="lh" aria-pressed="${show === 'lh'}"><i class="sw" style="background:var(--lh)"></i> Gauche</button>
+        <button data-act="show" data-v="rh" aria-pressed="${show === 'rh'}"><i class="sw" style="background:var(--rh)"></i> Droite</button>
+      </div>
+      <div class="seg small" role="group" aria-label="Changer d'octave${handName}">
+        <button data-act="oct-down" aria-label="Descendre d'une octave${handName}">▼</button>
+        <span class="seg-label">Octave${handName}</span>
+        <button data-act="oct-up" aria-label="Monter d'une octave${handName}">▲</button>
+      </div>
+      <button class="btn" data-act="listen">🔊 Écouter</button>
+      <label><input type="checkbox" data-act="t-sound" ${prefs.sound ? 'checked' : ''}> Son en avançant</label>
+      <label><input type="checkbox" data-act="t-names" ${prefs.names ? 'checked' : ''}> Nom des touches</label>
+      <span class="status" id="sndNote"></span>
+    </div>
+  </section>`;
+  if (ui.edit){
+    const cs = combos(s).map(c => visKeys(s, c)).filter(c => c.lh.length || c.rh.length);
+    const noLyr = !lyricWords(s).length;
+    const search = `https://www.google.com/search?q=${encodeURIComponent((s.source === 'pdf' || s.source === 'chords' ? 'boiteachansons ' : 'paroles ') + (s.title || '') + ' ' + (s.artist || ''))}`;
+    if (noLyr) h += `<section class="editor" aria-label="Ajouter les paroles">
+      <p class="instr">Ajoute les paroles de la chanson</p>
+      <p class="hint">${s.moments.some(mo => mo.w0 != null || mo.pl != null) ? 'Les accords sont déjà prêts : colle les paroles copiées depuis la même page que la grille d\'accords, et chaque accord se placera tout seul sur le bon mot.' : 'Colle les paroles, une ligne par ligne de la chanson.'}</p>
+      <textarea id="lyrText"></textarea>
+      <div class="row"><button class="btn primary" data-act="lyrics-save">Enregistrer les paroles</button>
+        <a class="btn" target="_blank" rel="noopener" href="${search}">Chercher les paroles sur le web</a></div>
+    </section>`;
+    else h += `<section class="editor" aria-label="Modifier">
+      <p class="instr">Touche le mot où commence l'accord ${ui.idx + 1}.</p>
+      <p class="hint">L'accord se place devant ce mot et l'appli passe toute seule au suivant. Tout est enregistré au fur et à mesure.</p>
+      <div class="row">
+        <button class="btn" data-act="no-words">Pas de paroles sur cet accord</button>
+      </div>
+      <p class="hint">Une touche est fausse ? Touche-la sur le clavier pour l'allumer ou l'éteindre${show === 'both' ? ', après avoir choisi la main :' : '.'}</p>
+      ${show === 'both' ? `<div class="hands" role="group" aria-label="Main">
+          <button class="hand l" data-act="hand-l" aria-pressed="${ui.hand === 'lh'}"><i class="sw" style="background:var(--lh)"></i>Main gauche</button>
+          <button class="hand r" data-act="hand-r" aria-pressed="${ui.hand === 'rh'}"><i class="sw" style="background:var(--rh)"></i>Main droite</button>
+        </div>` : ''}
+      <details class="more"><summary>Plus d'options</summary>
+        <div class="more-body">
+          <label class="f">Texte des paroles <small>Une ligne par ligne de la chanson.</small><textarea id="lyrText">${esc((s.lines || []).join('\n'))}</textarea></label>
+          <div class="row"><button class="btn" data-act="lyrics-save">Enregistrer le texte</button>
+            <a class="btn" target="_blank" rel="noopener" href="${search}">Chercher les paroles sur le web</a></div>
+          ${cs.length ? `<div><p class="hint" style="margin-bottom:6px">Mettre sur cet accord des touches déjà utilisées :</p>
+            <div class="combos">${cs.map((c, i) => `<button class="combo" data-act="combo" data-i="${i}" aria-label="Reprendre la combinaison ${i + 1}">${mini(c.lh, c.rh, 84, 22, R)}</button>`).join('')}</div></div>` : ''}
+          <div class="row">
+            <button class="btn" data-act="add-after">Ajouter un accord après</button>
+            <button class="btn" data-act="clear">Effacer les touches</button>
+            <button class="btn danger" data-act="del-mo" ${G.length < 2 ? 'disabled' : ''}>Supprimer cet accord</button>
+          </div>
+        </div>
+      </details>
+    </section>`;
+  }
+  h += `<section class="sheet${ui.edit ? ' editing' : ''}" aria-label="Paroles">${!ui.edit && !lyricWords(s).length ? '<p class="hint">Pas encore de paroles : passe en mode « Modifier » pour les ajouter.</p>' : ''}${sheetHtml(s, G, R)}</section>
+    <div class="foot"><span class="status">${storageNote()} Astuce : flèches ← → ou barre d'espace pour avancer.</span>
+    ${ui.confirmDel === s.id ? '' : `<button class="btn danger" data-act="del-song">Supprimer la chanson</button>`}</div>
+    ${ui.confirmDel === s.id ? confirmBox(s) : ''}`;
+  const open = app.querySelector('details.more[open]');
+  app.innerHTML = h;
+  if (open){ const d = app.querySelector('details.more'); if (d) d.open = true; }
+  soundNote(); preloadSong(s);
+}
+const SONG_ACTS = new Set(['tap-word','no-words','oct-up','oct-down','lyrics-save','prev','next','go','listen','show','word','pull','key','combo','clear','add-after','add-end','del-mo',
+  'place-open','place-start','place-cancel','place-word','place-none','place-undo','mode-play','mode-edit']);
+function songAction(act, b){
+  const s = curSong(), G = groupsOf(s), g = G[ui.idx], show = s.show || 'both';
+  const hands = show === 'both' ? ['lh', 'rh'] : [show];
+  switch (act){
+    case 'tap-word': case 'no-words': {
+      const j = act === 'tap-word' ? +b.dataset.j : null;
+      if (j != null){
+        G.forEach((gr, k) => {
+          const st = groupStart(s, gr);
+          if (st == null) return;
+          if ((k < ui.idx && st >= j) || (k > ui.idx && st <= j)) setGroupStart(s, gr, null);
+        });
+      }
+      setGroupStart(s, g, j); syncText(s); touch();
+      if (ui.idx < G.length - 1) goTo(ui.idx + 1); else render();
+      break;
+    }
+    case 'oct-up': case 'oct-down': {
+      const d = act === 'oct-up' ? 12 : -12;
+      const all = s.moments.flatMap(mo => hands.flatMap(hd => mo[hd]));
+      if (!all.length || Math.max(...all) + d > 108 || Math.min(...all) + d < 21) break;
+      s.moments.forEach(mo => hands.forEach(hd => { mo[hd] = mo[hd].map(n => n + d); }));
+      touch(); render();
+      const k = displayKeys(groupsOf(s), ui.idx); play([...k.lh, ...k.rh]);
+      break;
+    }
+    case 'lyrics-save': {
+      const t = document.getElementById('lyrText').value;
+      s.lines = t.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      if (!s.moments.some(mo => mo.w != null)){
+        if (s.moments.some(mo => mo.pl != null)){
+          const counts = s.lines.map(l => wordsOf(l).length), starts = []; let acc = 0;
+          counts.forEach(c => { starts.push(acc); acc += c; });
+          s.moments.forEach(mo => {
+            if (mo.pl == null || mo.pl >= s.lines.length || !counts[mo.pl]){ mo.w = null; return; }
+            const c = counts[mo.pl];
+            let i = c === mo.pn ? mo.pw : Math.round(mo.pw * c / mo.pn);
+            mo.w = starts[mo.pl] + Math.min(Math.max(0, i), c - 1);
+          });
+        } else if (s.moments.some(mo => mo.w0 != null)) s.moments.forEach(mo => { mo.w = mo.w0 ?? null; });
+      }
+      syncText(s); touch(); render(); break;
+    }
+    case 'mode-play': ui.edit = false; ui.place = null; render(); break;
+    case 'mode-edit': ui.edit = true; render(); break;
+    case 'prev': if (!ui.place) goTo(ui.idx - 1); break;
+    case 'next': if (!ui.place) goTo(ui.idx + 1); break;
+    case 'go': goTo(+b.dataset.i); break;
+    case 'listen': { const k = displayKeys(G, ui.idx); const was = prefs.sound; prefs.sound = true; play([...k.lh, ...k.rh]); prefs.sound = was; break; }
+    case 'show': {
+      const firstMoment = g ? g.m[0] : 0;
+      s.show = b.dataset.v; touch();
+      const NG = groupsOf(s); ui.idx = Math.max(0, NG.findIndex(x => x.m.includes(firstMoment)));
+      render(); break;
+    }
+    case 'word': {
+      const w = wordsOf(g.text), j = +b.dataset.w;
+      setGroupText(s, g, w.slice(0, j).join(' '));
+      let n = G[ui.idx + 1];
+      if (!n){ s.moments.push({ id: uid(), text: '', lh: [], rh: [], br: false }); n = { m: [s.moments.length - 1], text: '' }; }
+      setGroupText(s, n, (w.slice(j).join(' ') + ' ' + n.text).trim());
+      touch(); render(); break;
+    }
+    case 'pull': {
+      const n = G[ui.idx + 1]; if (!n || !n.text) break;
+      const nw = wordsOf(n.text);
+      setGroupText(s, g, (g.text + ' ' + nw.shift()).trim()); setGroupText(s, n, nw.join(' '));
+      touch(); render(); break;
+    }
+    case 'key': {
+      const k = +b.dataset.m;
+      if (ui.edit && !ui.place){
+        const mine = ui.hand, other = mine === 'lh' ? 'rh' : 'lh';
+        const has = g.keys[mine].includes(k);
+        g.m.forEach(i => {
+          const mo = s.moments[i];
+          if (has) mo[mine] = mo[mine].filter(x => x !== k);
+          else { if (!mo[mine].includes(k)) mo[mine].push(k); mo[mine].sort((a, c) => a - c); if (show === 'both') mo[other] = mo[other].filter(x => x !== k); }
+        });
+        touch(); render();
+      }
+      const was = prefs.sound; prefs.sound = true; play([k], false); prefs.sound = was;
+      break;
+    }
+    case 'combo': {
+      const c = combos(s).map(x => visKeys(s, x)).filter(x => x.lh.length || x.rh.length)[+b.dataset.i];
+      if (c){ g.m.forEach(i => hands.forEach(hd => { s.moments[i][hd] = [...c[hd]]; })); touch(); render(); play([...c.lh, ...c.rh]); }
+      break;
+    }
+    case 'clear': g.m.forEach(i => hands.forEach(hd => { s.moments[i][hd] = []; })); touch(); render(); break;
+    case 'add-after': { const at = g.m[g.m.length - 1] + 1; s.moments.splice(at, 0, { id: uid(), text: '', lh: [], rh: [], br: false, w: null }); syncText(s); touch(); goTo(ui.idx + 1, false); break; }
+    case 'add-end': s.moments.push({ id: uid(), text: '', lh: [], rh: [], br: false, w: null }); syncText(s); touch(); goTo(groupsOf(s).length - 1, false); break;
+    case 'del-mo': {
+      const st = groupStart(s, g);
+      [...g.m].reverse().forEach(i => s.moments.splice(i, 1));
+      if (st != null){ const n = groupsOf(s)[ui.idx]; if (n && groupStart(s, n) == null) setGroupStart(s, n, st); }
+      syncText(s);
+      touch(); goTo(Math.min(ui.idx, groupsOf(s).length - 1), false); break;
+    }
+    case 'place-open': {
+      const lines = []; let cur = [];
+      G.forEach((gr, i) => { if (i > 0 && gr.br && cur.length){ lines.push(cur.join(' ')); cur = []; } if (gr.text) cur.push(gr.text); });
+      if (cur.length) lines.push(cur.join(' '));
+      ui.place = { phase: 'text', text: lines.join('\n') }; render(); break;
+    }
+    case 'place-start': {
+      const text = document.getElementById('placeText').value;
+      const words = [];
+      text.split(/\r?\n/).forEach(l => wordsOf(l).forEach((w, i) => words.push({ w, ls: i === 0 })));
+      ui.place = { phase: 'tap', words, starts: [], k: 0 };
+      if (!words.length){ G.forEach(gr => setGroupText(s, gr, '')); touch(); ui.place = null; }
+      render(); window.scrollTo(0, 0); break;
+    }
+    case 'place-cancel': ui.place = null; render(); break;
+    case 'place-word': case 'place-none': {
+      const P = ui.place;
+      P.starts.push(act === 'place-word' ? +b.dataset.j : null);
+      P.k++;
+      const last = [...P.starts].reverse().find(x => x !== null);
+      const allUsed = last !== undefined && last >= P.words.length - 1 && act === 'place-word';
+      if (P.k >= G.length || allUsed){
+        applyPlacement(s, G); touch(); ui.place = null; ui.idx = 0; render(); window.scrollTo(0, 0);
+      } else { render(); const k = displayKeys(groupsOf(s), P.k); play([...k.lh, ...k.rh]); }
+      break;
+    }
+    case 'place-undo': { const P = ui.place; if (P.k){ P.starts.pop(); P.k--; } render(); break; }
+  }
+}
+function scrollToCurrent(){
+  const el = app.querySelector('.pin.cur');
+  if (!el) return;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
+}
+function goTo(i, sound = true){
+  const s = curSong(); if (!s) return;
+  const G = groupsOf(s);
+  ui.idx = Math.max(0, Math.min(i, G.length - 1)); ui.chordErr = ''; ui.msg = '';
+  render(); scrollToCurrent();
+  if (sound){ const k = displayKeys(G, ui.idx); if (!k.held) play([...k.lh, ...k.rh]); }
+}
+function touch(){ Store.save(curSong()); }
+
+/* ---------- Ajout depuis une grille d'accords en PDF (La Boîte à chansons) ---------- */
+let imp = null;
+const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+let pdfReady = null;
+function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+function loadPdfJs(){
+  if (!pdfReady) pdfReady = loadScript(PDFJS + 'pdf.min.js').then(() => loadScript(PDFJS + 'pdf.worker.min.js')).then(() => {
+    const lib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
+    lib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js';
+    return lib;
+  });
+  return pdfReady;
+}
+function openImport(){
+  imp = { phase: 'file', err: '' };
+  ui.view = 'import'; render(); window.scrollTo(0, 0);
+  loadPdfJs().catch(() => {});
+}
+function closeImport(){ imp = null; }
+
+function chordShape(name){
+  const s = String(name).trim().replace(/\s+/g, '');
+  const sl = s.search(/\/[A-Ga-g]/);
+  const main = sl >= 0 ? s.slice(0, sl) : s, bassStr = sl >= 0 ? s.slice(sl + 1) : null;
+  const r = parseRoot(main); if (!r) return null;
+  const iv = quality(r.rest);
+  let bass = r.pc;
+  if (bassStr && !/^\d/.test(bassStr)){ const b = parseRoot(bassStr); if (b && !b.rest) bass = b.pc; }
+  return { root: r.pc, bass, pcs: [...new Set(iv.map(i => (r.pc + i) % 12))] };
+}
+// Main droite : la position la plus proche de l'accord précédent, pour bouger le moins possible
+function voice(shape, prev){
+  const cands = [];
+  for (let lo = 57; lo <= 68; lo++){
+    const order = [...shape.pcs].sort((a, b) => ((a - lo % 12 + 12) % 12) - ((b - lo % 12 + 12) % 12));
+    let n = lo - 1; const v = [];
+    order.forEach(pc => { n++; while ((n % 12 + 12) % 12 !== pc) n++; v.push(n); });
+    if (v[v.length - 1] <= 79) cands.push(v);
+  }
+  const cost = v => prev ? v.reduce((s, n, i) => s + Math.abs(n - prev[Math.min(i, prev.length - 1)]), 0) : Math.abs(v.reduce((a, b) => a + b, 0) / v.length - 67);
+  cands.sort((a, b) => cost(a) - cost(b));
+  return cands[0] || shape.pcs.map(pc => 60 + pc);
+}
+/* Lecture des grilles de La Boîte à chansons, directement dans l'appli.
+   Dans ces PDF, chaque accord et chaque ligne de paroles est une petite image :
+   - les accords sont reconnus lettre par lettre (modèles de lettres + ceux appris) ;
+   - les paroles ne sont pas lues : l'appli compte seulement les mots (espaces) pour savoir sur quel mot tombe chaque accord. */
+const GW = 8, GH = 12;
+const BUILTIN_GLYPHS = [["G", 8, "000111000111111001100011110000001100000011000000110011111100000111000011111000110111011100111101"], ["B", 7, "111111001111111011000011110000111100001111111110111111101100001111000011110000111110011111111110"], ["C", 8, "000111000111111001100011110000001100000011000000110000001100000011000000111000110111011100111110"], ["m", 9, "000000000000000000000000111101101111111111011011110110111101101111011011110110111101101110011001"], ["A", 9, "000110000001100000011100001111000011010000100100011001100111111001111110010000111100001111000011"], ["F", 6, "111111111111111111100000111000001110000011100000111111111110000011100000111000001110000011100000"], ["#", 9, "000000100011011000110110001101101111111100110110001001001111111111111111011001000110010001100100"], ["m", 10, "000000000000000000000000111101101111111111011011110110111101101111011011110110111101101111011011"], ["E", 7, "111111111111111111100000111000001110000011111110111111101110000011100000111000001110000011111111"], ["D", 8, "111110001111111011000110110000111100001111000011110000111100001111000011110001111100111011111100"], ["#", 8, "000000000011011000110110001101101111111100110110001001001111111111111111011001000110010001000100"]];
+function loadLearned(){ try { return JSON.parse(localStorage.getItem('carnet-piano-glyphs') || '{"glyphs":[],"whole":{}}'); } catch (e) { return { glyphs: [], whole: {} }; } }
+let learned = loadLearned();
+function learnedRef(){ return Store.col ? Store.col.doc('prefs').collection('glyphs').doc('all') : null; }
+async function syncLearned(){
+  const r = learnedRef(); if (!r) return;
+  try { const d = await r.get(); if (d.exists){ const v = d.data(); learned = { glyphs: [...(v.glyphs || [])], whole: { ...(v.whole || {}) } }; try { localStorage.setItem('carnet-piano-glyphs', JSON.stringify(learned)); } catch (e) {} } } catch (e) {}
+}
+async function saveLearned(){
+  try { localStorage.setItem('carnet-piano-glyphs', JSON.stringify(learned)); } catch (e) {}
+  const r = learnedRef(); if (r) try { await r.set(JSON.parse(JSON.stringify(learned))); } catch (e) {}
+}
+function inkOf(im){
+  const { w, h, px } = im, ink = new Uint8Array(w * h);
+  for (let i = 0; i < w * h; i++){
+    const o = i * 4, a = px[o + 3];
+    ink[i] = a > 100 && (0.299 * px[o] + 0.587 * px[o + 1] + 0.114 * px[o + 2]) < 140 ? 1 : 0;
+  }
+  return ink;
+}
+function colRuns(ink, w, h){
+  const runs = []; let x = 0;
+  const col = x => { for (let y = 0; y < h; y++) if (ink[y * w + x]) return true; return false; };
+  while (x < w){ if (col(x)){ const s = x; while (x < w && col(x)) x++; runs.push([s, x - 1]); } else x++; }
+  return runs;
+}
+function vExt(ink, w, h){
+  let t = -1, b = -1;
+  for (let y = 0; y < h; y++){ for (let x = 0; x < w; x++) if (ink[y * w + x]){ if (t < 0) t = y; b = y; break; } }
+  return t < 0 ? [0, h - 1] : [t, b];
+}
+function strokeRatio(ink, w, h){
+  const [t, b] = vExt(ink, w, h), runs = [];
+  for (let y = t; y <= b; y++){ let x = 0; while (x < w){ if (ink[y * w + x]){ const s = x; while (x < w && ink[y * w + x]) x++; runs.push(x - s); } else x++; } }
+  if (!runs.length) return 0;
+  runs.sort((a, c) => a - c);
+  return runs[runs.length >> 1] / (b - t + 1);
+}
+function glyphSigs(ink, w, h){
+  const runs = colRuns(ink, w, h), [t, b] = vExt(ink, w, h), H = b - t + 1;
+  return { runs, sigs: runs.map(([x0, x1]) => {
+    const gw = x1 - x0 + 1; let bits = '';
+    for (let j = 0; j < GH; j++){
+      const ya = t + Math.floor(j * H / GH), yb = Math.max(ya + 1, t + Math.floor((j + 1) * H / GH));
+      for (let i = 0; i < GW; i++){
+        const xa = x0 + Math.floor(i * gw / GW), xb = Math.max(xa + 1, x0 + Math.floor((i + 1) * gw / GW));
+        let tot = 0, n = 0;
+        for (let y = ya; y < yb; y++) for (let x = xa; x < xb; x++){ n++; tot += ink[y * w + x]; }
+        bits += tot >= 0.35 * n ? '1' : '0';
+      }
+    }
+    return [Math.round(gw / H * 10), bits];
+  }) };
+}
+function readGlyph([ratio, bits]){
+  let best = null, bd = 99;
+  for (const [ch, r2, b2] of [...BUILTIN_GLYPHS, ...learned.glyphs]){
+    if (Math.abs(r2 - ratio) > 2) continue;
+    let d = 0; for (let i = 0; i < bits.length; i++) if (bits[i] !== b2[i]) d++;
+    if (d < bd){ bd = d; best = ch; }
+  }
+  return bd <= 14 ? best : null;
+}
+function wordSpans(ink, w, h){
+  const gap = 0.45 * h, words = [];
+  colRuns(ink, w, h).forEach(r => { if (words.length && r[0] - words[words.length - 1][1] - 1 < gap) words[words.length - 1][1] = r[1]; else words.push([...r]); });
+  return words;
+}
+async function imageData(page, id){
+  const store = String(id).startsWith('g_') ? page.commonObjs : page.objs;
+  const obj = await new Promise(res => { try { store.get(id, res); } catch (e) { res(null); } });
+  if (!obj) return null;
+  const w = obj.width, h = obj.height;
+  if (obj.bitmap){
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const ctx = c.getContext('2d'); ctx.drawImage(obj.bitmap, 0, 0);
+    return { w, h, px: ctx.getImageData(0, 0, w, h).data };
+  }
+  if (!obj.data) return null;
+  const px = new Uint8ClampedArray(w * h * 4), d = obj.data;
+  if (d.length === w * h * 4) px.set(d);
+  else if (d.length === w * h * 3){ for (let i = 0, j = 0; i < w * h; i++, j += 3){ px[i * 4] = d[j]; px[i * 4 + 1] = d[j + 1]; px[i * 4 + 2] = d[j + 2]; px[i * 4 + 3] = 255; } }
+  else return null;
+  return { w, h, px };
+}
+async function pageImagesInfo(lib, page){
+  const ops = await page.getOperatorList(), O = lib.OPS, U = lib.Util;
+  const H = page.view[3] - page.view[1];
+  let ctm = [1, 0, 0, 1, 0, 0]; const stack = [], out = [];
+  for (let i = 0; i < ops.fnArray.length; i++){
+    const fn = ops.fnArray[i], a = ops.argsArray[i];
+    if (fn === O.save) stack.push(ctm.slice());
+    else if (fn === O.restore) ctm = stack.pop() || ctm;
+    else if (fn === O.transform) ctm = U.transform(ctm, a);
+    else if (fn === O.paintImageXObject){
+      const x0 = Math.min(ctm[4], ctm[4] + ctm[0]), x1 = Math.max(ctm[4], ctm[4] + ctm[0]);
+      const yb = Math.min(ctm[5], ctm[5] + ctm[3]), yt = Math.max(ctm[5], ctm[5] + ctm[3]);
+      out.push({ id: a[0], x0, x1, top: H - yt, bottom: H - yb });
+    }
+  }
+  const cache = {};
+  for (const it of out){
+    if (!(it.id in cache)) cache[it.id] = await imageData(page, it.id);
+    it.im = cache[it.id];
+  }
+  let stop = null;
+  const tc = await page.getTextContent();
+  tc.items.forEach(t => { if (/^Accords de/i.test(t.str || '')) stop = H - t.transform[5]; });
+  return out.filter(it => it.im && it.top > 60 && (it.bottom - it.top) >= 4 && (stop == null || it.top < stop - 12));
+}
+async function analyzeSheet(file){
+  const lib = await loadPdfJs();
+  const pdf = await lib.getDocument({ data: new Uint8Array(await file.arrayBuffer()), isEvalSupported: false, disableFontFace: true, isOffscreenCanvasSupported: false }).promise;
+  let title = '', artist = '';
+  const rows = [];
+  for (let pn = 1; pn <= pdf.numPages; pn++){
+    const page = await pdf.getPage(pn);
+    if (pn === 1){
+      const tc = await page.getTextContent();
+      const t = tc.items.map(i => (i.str || '').trim()).find(s => /^.+\(.+\)$/.test(s));
+      if (t){ const m = t.match(/^(.+?)\s*\((.+)\)$/); title = m[1]; artist = m[2]; }
+    }
+    const ims = await pageImagesInfo(lib, page);
+    ims.forEach(it => {
+      it.ink = inkOf(it.im);
+      it.chord = it.im.h <= 50 && strokeRatio(it.ink, it.im.w, it.im.h) >= 0.135;
+    });
+    ims.sort((a, b) => a.top - b.top || a.x0 - b.x0);
+    const pr = [];
+    ims.forEach(it => { let r = pr.find(r => Math.abs(r.top - it.top) < 3.5); if (!r){ r = { top: it.top, page: pn, items: [] }; pr.push(r); } r.items.push(it); });
+    pr.sort((a, b) => a.top - b.top); rows.push(...pr);
+  }
+  const unknown = new Map(), lines = [];
+  const readChord = it => {
+    const { w, h } = it.im, { sigs, runs } = glyphSigs(it.ink, w, h);
+    const key = sigs.map(s => s[0] + ':' + s[1]).join('|');
+    let name = learned.whole[key] || null;
+    if (!name){ const chars = sigs.map(readGlyph); if (chars.length && chars.every(Boolean)) name = chars.join(''); }
+    if (!name && !unknown.has(key)) unknown.set(key, { im: it.im, sigs });
+    return { name, key, runs };
+  };
+  const wordsOfRow = r => {
+    const words = [];
+    r.items.slice().sort((a, b) => a.x0 - b.x0).forEach(it => { const sc = (it.x1 - it.x0) / it.im.w; wordSpans(it.ink, it.im.w, it.im.h).forEach(([a, b]) => words.push([it.x0 + a * sc, it.x0 + (b + 1) * sc])); });
+    return words;
+  };
+  for (let i = 0; i < rows.length; i++){
+    const r = rows[i], chords = r.items.filter(it => it.chord);
+    if (chords.length){
+      const nx = rows[i + 1];
+      const lyr = nx && !nx.items.some(it => it.chord) && (nx.page !== r.page || nx.top - r.top < 14) ? nx : null;
+      const words = lyr ? wordsOfRow(lyr) : [];
+      const c = chords.sort((a, b) => a.x0 - b.x0).map(it => {
+        const rd = readChord(it), sc = (it.x1 - it.x0) / it.im.w, runs = rd.runs;
+        const cx = it.x0 + (runs.length ? runs[0][0] + (runs[runs.length - 1][1] - runs[0][0]) * 0.3 : 0) * sc;
+        let wi = words.findIndex(([a, b]) => cx < b); if (wi < 0) wi = words.length;
+        return [rd.name, lyr ? wi : 0, rd.key];
+      });
+      lines.push({ n: words.length, c });
+      if (lyr) i++;
+    } else lines.push({ n: wordsOfRow(r).length, c: [] });
+  }
+  if (title && title === title.toUpperCase()) title = title.charAt(0) + title.slice(1).toLowerCase();
+  return { title, artist, lines, unknown };
+}
+function chordImgUrl(im){
+  const c = document.createElement('canvas'); c.width = im.w; c.height = im.h;
+  c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(im.px), im.w, im.h), 0, 0);
+  return c.toDataURL();
+}
+async function handlePdf(file){
+  imp.phase = 'reading'; imp.err = ''; imp.step = 'Lecture de la grille…'; render();
+  try {
+    await syncLearned();
+    const res = await analyzeSheet(file);
+    imp.res = res; imp.fileName = file.name;
+    if (res.unknown.size){
+      imp.phase = 'names';
+      imp.unknownList = [...res.unknown.entries()].map(([key, u]) => ({ key, sigs: u.sigs, url: chordImgUrl(u.im) }));
+      render(); return;
+    }
+    finishImport();
+  } catch (e) {
+    if (!imp) return;
+    imp.phase = 'file';
+    imp.err = "Ce PDF n'a pas pu être lu. Vérifie que c'est bien une grille téléchargée sur La Boîte à chansons, puis réessaie.";
+    render();
+  }
+}
+function finishImport(){
+  const res = imp.res;
+  const lines = res.lines.map(L => ({ n: L.n, c: L.c.map(([name, wi, key]) => [name || learned.whole[key] || '?', wi]) }));
+  let moments = momentsFromSheet({ lines });
+  moments = moments.filter((m, i) => i === 0 || m.chord !== moments[i - 1].chord);
+  if (!moments.length){ imp.phase = 'file'; imp.err = "Aucun accord trouvé dans ce PDF. Utilise une grille téléchargée sur La Boîte à chansons."; render(); return; }
+  const song = { id: uid(), title: (res.title || imp.fileName.replace(/\.pdf$/i, '').split(' - ')[0]).trim(), artist: (res.artist || '').trim(), moments, lines: [], status: 'new', source: 'pdf', updatedAt: Date.now() };
+  syncText(song);
+  songs[song.id] = song; Store.save(song, true);
+  closeImport();
+  Object.assign(ui, { view: 'song', songId: song.id, idx: 0, edit: true });
+  render(); window.scrollTo(0, 0);
+}
+function saveChordNames(){
+  const missing = [];
+  imp.unknownList.forEach((u, i) => {
+    let v = (document.getElementById('cn' + i).value || '').trim().replace(/\s+/g, '');
+    if (v) v = v.charAt(0).toUpperCase() + v.slice(1);
+    u.value = v;
+    if (!v || !chordShape(v)){ missing.push(i); return; }
+    learned.whole[u.key] = v;
+    if (u.sigs.length === v.length) u.sigs.forEach((s, j) => learned.glyphs.push([v[j], s[0], s[1]]));
+  });
+  if (missing.length){ imp.err = 'Il manque un nom, ou il ne commence pas par une lettre de A à G : recopie le nom écrit sur l’image (par exemple D4 ou Am7).'; render(); return; }
+  imp.err = ''; saveLearned(); finishImport();
+}
+
+function momentsFromSheet(d){
+  const moments = []; let prev = null, li = 0;
+  (d.lines || []).forEach(L => {
+    const n = Math.max(0, parseInt(L.n, 10) || 0);
+    (Array.isArray(L.c) ? L.c : []).forEach(c => {
+      const name = Array.isArray(c) ? c[0] : c, wi = Array.isArray(c) ? parseInt(c[1], 10) || 0 : 0;
+      const sh = chordShape(name);
+      const m = { id: uid(), text: '', lh: [], rh: [], br: false, w: null, chord: String(name) };
+      if (sh){ m.rh = voice(sh, prev); prev = m.rh; m.lh = [48 + sh.bass]; }
+      if (n > 0 && wi < n){ m.pl = li; m.pw = wi; m.pn = n; }
+      moments.push(m);
+    });
+    if (n > 0) li++;
+  });
+  return moments;
+}
+function renderImport(){
+  let h = `<div class="topbar"><button class="btn ghost" data-act="imp-close">← Mes chansons</button></div>
+    <div class="title-block"><h1>Ajouter une chanson</h1></div><div class="imp-steps">`;
+  if (imp.err) h += `<p class="err" role="alert">${esc(imp.err)}</p>`;
+  if (imp.phase === 'names'){
+    h += `<div class="panel">
+      <p class="instr">Quelques accords sont nouveaux pour l'appli</p>
+      <p class="hint">Recopie le nom écrit sur chaque image, lettre par lettre (par exemple Am7). L'appli les retiendra pour les prochaines chansons.</p>
+      <div class="names">${imp.unknownList.map((u, i) => `<label class="name-row"><img src="${u.url}" alt="Accord ${i + 1}"><input type="text" id="cn${i}" value="${esc(u.value || '')}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Nom de l'accord ${i + 1}"></label>`).join('')}</div>
+      <div class="row"><button class="btn primary" data-act="imp-names">Continuer</button><button class="btn ghost" data-act="imp-close">Annuler</button></div>
+    </div>`;
+  } else if (imp.phase === 'reading'){
+    h += `<div class="panel" aria-live="polite"><h2>Lecture de la grille…</h2><p class="hint" id="impStep">${esc(imp.step || '')}</p><p class="hint">Garde cette page ouverte.</p></div>`;
+  } else {
+    h += `<div class="panel">
+      <p class="instr"><span class="n">1</span>Trouve ta chanson sur La Boîte à chansons</p>
+      <p class="hint">Sur la page de la chanson, télécharge la grille en PDF.</p>
+      <div><a class="btn" href="https://www.boiteachansons.net/partitions" target="_blank" rel="noopener">Ouvrir La Boîte à chansons</a></div>
+    </div>
+    <div class="panel">
+      <p class="instr"><span class="n">2</span>Choisis le PDF téléchargé</p>
+      <p class="hint">L'appli lit les accords, les transforme en touches et repère sur quel mot tombe chacun. Tu colleras ensuite les paroles depuis la page de la chanson : les accords se placeront tout seuls dessus.</p>
+      <label class="file-drop"><span class="instr">Choisir le PDF</span><input type="file" accept="application/pdf,.pdf" data-act="imp-file"></label>
+    </div>`;
+  }
+  h += `</div>`;
+  app.innerHTML = h;
+}
+function impAction(act){
+  if (act === 'imp-close'){ closeImport(); ui.view = 'library'; render(); }
+  if (act === 'imp-names') saveChordNames();
+}
+function impInput(){}
+
+/* ---------- Sauvegarde / restauration ---------- */
+async function exportSongs(){
+  const data = JSON.stringify({ app: 'carnet-piano', version: 1, exportedAt: Date.now(), songs: Object.values(songs), glyphs: learned });
+  const d = new Date(), name = `carnet-piano-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}.json`;
+  if (window.claude && typeof window.claude.use === 'function'){
+    const dl = await window.claude.use('downloads');
+    if (dl){ try { await dl.save({ filename: name, data }); } catch (e) {} return; }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' })); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+async function importSongs(file){
+  try {
+    const d = JSON.parse(await file.text());
+    const list = Array.isArray(d) ? d : d.songs;
+    if (!Array.isArray(list)) throw 0;
+    let n = 0;
+    list.forEach(s => {
+      if (!s || !Array.isArray(s.moments)) return;
+      const id = s.id || uid();
+      if (songs[id] && (songs[id].updatedAt || 0) > (s.updatedAt || 0)) return;
+      songs[id] = { ...s, id }; Store.save(songs[id], true); n++;
+    });
+    if (d.glyphs && Array.isArray(d.glyphs.glyphs)){
+      learned = { glyphs: [...learned.glyphs, ...d.glyphs.glyphs], whole: { ...learned.whole, ...(d.glyphs.whole || {}) } };
+      saveLearned();
+    }
+    ui.notice = n ? `${n} chanson${n > 1 ? 's' : ''} importée${n > 1 ? 's' : ''}.` : 'Aucune nouvelle chanson dans ce fichier.';
+  } catch (e) { ui.notice = "Ce fichier n'est pas une sauvegarde du carnet."; }
+  render();
+}
+
+/* ---------- Événements ---------- */
+app.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const act = b.dataset.act;
+  if (act.startsWith('imp-')){ if (imp && act !== 'imp-file') impAction(act, b, e); return; }
+  if (ui.view === 'song' && curSong() && SONG_ACTS.has(act)){ songAction(act, b); return; }
+  const s = curSong(), m = curMo();
+  switch (act){
+    case 'new': ui.creating = true; render(); break;
+    case 'cancel-new': ui.creating = false; render(); break;
+    case 'create': {
+      const title = document.getElementById('nTitle').value.trim() || 'Sans titre';
+      const artist = document.getElementById('nArtist').value.trim();
+      const lines = document.getElementById('nLyrics').value.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const moments = lines.length ? lines.map(t => ({ id: uid(), text: t, lh: [], rh: [], br: true })) : [{ id: uid(), text: '', lh: [], rh: [], br: true }];
+      const song = { id: uid(), title, artist, moments, status: 'new', updatedAt: Date.now() };
+      songs[song.id] = song; Store.save(song, true);
+      Object.assign(ui, { creating: false, view: 'song', songId: song.id, idx: 0, edit: true });
+      render(); window.scrollTo(0, 0); break;
+    }
+    case 'demo': { const d = demoSong(); songs[d.id] = d; Store.save(d, true); Object.assign(ui, { view: 'song', songId: d.id, idx: 0, edit: false }); render(); window.scrollTo(0, 0); break; }
+    case 'open': Object.assign(ui, { place: null, view: 'song', songId: b.dataset.id, idx: 0, edit: false, chordErr: '' }); render(); window.scrollTo(0, 0); break;
+    case 'home': ui.place = null; ui.view = 'library'; render(); window.scrollTo(0, 0); break;
+    case 'mode-play': ui.edit = false; render(); break;
+    case 'mode-edit': ui.edit = true; render(); break;
+    case 'prev': goTo(ui.idx - 1); break;
+    case 'next': goTo(ui.idx + 1); break;
+    case 'go': goTo(+b.dataset.i); break;
+    case 'listen': { const k = displayKeys(s, ui.idx); const was = prefs.sound; prefs.sound = true; play([...k.lh, ...k.rh]); prefs.sound = was; break; }
+    case 'show': s.show = b.dataset.v; touch(); render(); break;
+    case 'word': {
+      const words = (m.text || '').split(/\s+/).filter(Boolean), w = +b.dataset.w;
+      const moved = words.slice(w).join(' ');
+      m.text = words.slice(0, w).join(' ');
+      let n = s.moments[ui.idx + 1];
+      if (!n){ n = { id: uid(), text: '', lh: [], rh: [], br: false }; s.moments.push(n); }
+      n.text = (moved + ' ' + (n.text || '')).trim();
+      touch(); render(); break;
+    }
+    case 'pull': {
+      const n = s.moments[ui.idx + 1]; if (!n || !n.text) break;
+      const nw = n.text.split(/\s+/).filter(Boolean);
+      m.text = ((m.text || '') + ' ' + nw.shift()).trim(); n.text = nw.join(' ');
+      touch(); render(); break;
+    }
+    case 'key': {
+      const k = +b.dataset.m;
+      if (ui.edit){
+        const mine = ui.hand, other = mine === 'lh' ? 'rh' : 'lh';
+        if (m[mine].includes(k)) m[mine] = m[mine].filter(x => x !== k);
+        else { m[mine].push(k); m[mine].sort((a, c) => a - c); m[other] = m[other].filter(x => x !== k); }
+        touch(); render();
+      }
+      const was = prefs.sound; prefs.sound = true; play([k], false); prefs.sound = was;
+      break;
+    }
+    case 'hand-l': ui.hand = 'lh'; render(); break;
+    case 'hand-r': ui.hand = 'rh'; render(); break;
+    case 'combo': {
+      const show = s.show || 'both';
+      const c = combos(s).map(x => visKeys(s, x)).filter(x => x.lh.length || x.rh.length)[+b.dataset.i];
+      if (c){ if (show !== 'rh') m.lh = [...c.lh]; if (show !== 'lh') m.rh = [...c.rh]; touch(); render(); play([...c.lh, ...c.rh]); }
+      break;
+    }
+    case 'chord': {
+      const v = document.getElementById('chordIn').value;
+      const k = chordToKeys(v);
+      if (!k){ ui.chordErr = v.trim() ? `« ${v.trim()} » n'est pas reconnu. Essaie une forme simple comme Am, C, F, G7 ou Dm.` : 'Tape un nom d’accord, par exemple Am.'; render(); break; }
+      ui.chordErr = ''; m.lh = k.lh; m.rh = k.rh; touch(); render(); play([...m.lh, ...m.rh]); break;
+    }
+    case 'clear': m.lh = []; m.rh = []; touch(); render(); break;
+    case 'split': {
+      const input = document.getElementById('moText');
+      const pos = ui.caret ?? input.value.length;
+      const a = input.value.slice(0, pos).trim(), c = input.value.slice(pos).trim();
+      if (!a || !c){ ui.msg = 'Place le curseur entre deux mots dans les paroles, puis appuie sur « Couper au curseur ».'; render(); break; }
+      m.text = a;
+      s.moments.splice(ui.idx + 1, 0, { id: uid(), text: c, lh: [...m.lh], rh: [...m.rh], br: false });
+      ui.caret = null; touch(); goTo(ui.idx + 1, false); break;
+    }
+    case 'push': {
+      const input = document.getElementById('moText');
+      const pos = ui.caret ?? 0;
+      const a = input.value.slice(0, pos).trim(), c = input.value.slice(pos).trim();
+      if (!c){ ui.msg = 'Place le curseur juste avant les mots à envoyer au moment suivant.'; render(); break; }
+      const n = s.moments[ui.idx + 1]; m.text = a; n.text = (c + ' ' + (n.text || '')).trim();
+      ui.caret = null; touch(); goTo(ui.idx + 1, false); break;
+    }
+    case 'import': openImport(); break;
+    case 'export': exportSongs(); break;
+    case 'filter': ui.filter = b.dataset.f; render(); break;
+    case 'status': {
+      const k = b.dataset.s;
+      s.status = k; if (k === 'learned') s.checkedAt = Date.now();
+      touch(); render(); break;
+    }
+    case 'fav': s.fav = !s.fav; touch(); render(); break;
+    case 'add-after': s.moments.splice(ui.idx + 1, 0, { id: uid(), text: '', lh: [], rh: [], br: false }); touch(); goTo(ui.idx + 1, false); break;
+    case 'add-end': s.moments.push({ id: uid(), text: '', lh: [], rh: [], br: true }); touch(); goTo(s.moments.length - 1, false); break;
+    case 'move-l': case 'move-r': {
+      const j = act === 'move-l' ? ui.idx - 1 : ui.idx + 1;
+      [s.moments[ui.idx], s.moments[j]] = [s.moments[j], s.moments[ui.idx]];
+      s.moments[0].br = true; touch(); goTo(j, false); break;
+    }
+    case 'del-mo': s.moments.splice(ui.idx, 1); s.moments[0].br = true; touch(); goTo(Math.min(ui.idx, s.moments.length - 1), false); break;
+    case 'del-card': {
+      ui.confirmDel = b.dataset.id; render();
+      const y = app.querySelector('[data-act="del-yes"]'); if (y) y.focus();
+      break;
+    }
+    case 'del-song':
+      ui.confirmDel = s.id; render();
+      { const y = app.querySelector('[data-act="del-yes"]'); if (y){ y.focus(); y.scrollIntoView({ block: 'center' }); } }
+      break;
+    case 'del-yes': {
+      const id = b.dataset.id; ui.confirmDel = null;
+      if (songs[id]) Store.remove(id);
+      if (ui.view === 'song' && ui.songId === id) ui.view = 'library';
+      render(); break;
+    }
+    case 'del-no': ui.confirmDel = null; render(); break;
+  }
+});
+app.addEventListener('change', e => {
+  const act = e.target.dataset.act;
+  if (act === 'imp-file' && imp && e.target.files[0]){ handlePdf(e.target.files[0]); return; }
+  if (act === 'import-json' && e.target.files[0]){ importSongs(e.target.files[0]); return; }
+  if (act === 't-sound'){ prefs.sound = e.target.checked; savePrefs(); }
+  if (act === 't-names'){ prefs.names = e.target.checked; savePrefs(); render(); }
+  if (act === 'br'){ const s = curSong(), g = groupsOf(s)[ui.idx]; s.moments[g.m[0]].br = e.target.checked; touch(); render(); }
+});
+app.addEventListener('input', e => {
+  if (ui.view === 'import' && imp){ impInput(e); return; }
+  const s = curSong(); if (!s) return;
+  if (e.target.id === 'moText'){
+    setGroupText(s, groupsOf(s)[ui.idx], e.target.value); ui.caret = e.target.selectionStart; touch();
+    const w = app.querySelector('.mo[aria-current="true"] .words');
+    if (w){ w.textContent = e.target.value || '…'; w.classList.toggle('none', !e.target.value); }
+    const n = app.querySelector('.now-words'); if (n) n.textContent = e.target.value;
+  }
+  if (e.target.id === 'sTitle'){ s.title = e.target.value; touch(); }
+  if (e.target.id === 'sArtist'){ s.artist = e.target.value; touch(); }
+});
+['keyup', 'click', 'select'].forEach(ev => app.addEventListener(ev, e => {
+  if (e.target.id === 'moText') ui.caret = e.target.selectionStart;
+}));
+app.addEventListener('keydown', e => {
+  if (e.target.id === 'chordIn' && e.key === 'Enter'){ e.preventDefault(); app.querySelector('[data-act="chord"]').click(); }
+});
+document.addEventListener('keydown', e => {
+  if (ui.view !== 'song' || ui.place) return;
+  const t = e.target.tagName;
+  if (t === 'INPUT' || t === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || (e.key === ' ' && t !== 'BUTTON')){ e.preventDefault(); goTo(ui.idx + 1); }
+  else if (e.key === 'ArrowLeft'){ e.preventDefault(); goTo(ui.idx - 1); }
+});
+
+loadSoundfont();
+Store.init();
+})();
+</script>
+</body>
+</html>
