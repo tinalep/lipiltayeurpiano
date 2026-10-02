@@ -1070,9 +1070,22 @@ function updateScrollBtn(){
 function followScroll(){
   const cards = [...app.querySelectorAll('.gcard[data-i]')]; if (!cards.length) return;
   const line = window.innerHeight * 0.38;
-  let best = null;
-  for (const c of cards){ const r = c.getBoundingClientRect(); if (r.top <= line) best = c; else break; }
-  if (!best) best = cards[0];
+  // Les cartes sont regroupées par rangée (une ou deux par rangée selon l'écran).
+  // Dans une rangée, on passe de gauche à droite au fil de sa traversée de la ligne de lecture.
+  const rows = [];
+  cards.forEach(c => {
+    const r = c.getBoundingClientRect(), last = rows[rows.length - 1];
+    if (last && Math.abs(last.top - r.top) < 6){ last.items.push(c); last.bottom = Math.max(last.bottom, r.bottom); }
+    else rows.push({ top: r.top, bottom: r.bottom, items: [c] });
+  });
+  let row = null;
+  for (const r of rows){ if (r.top <= line) row = r; else break; }
+  let best;
+  if (!row) best = cards[0];
+  else {
+    const frac = Math.min(0.999, Math.max(0, (line - row.top) / Math.max(1, row.bottom - row.top)));
+    best = row.items[Math.floor(frac * row.items.length)];
+  }
   const i = +best.dataset.i;
   if (i === ui.idx) return;
   ui.idx = i;
